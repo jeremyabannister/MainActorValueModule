@@ -11,11 +11,11 @@
 
 ///
 @propertyWrapper
-@dynamicMemberLookup
-public final class MainActorValue_new <Value>: MainActorValueAccessor {
+//@dynamicMemberLookup
+public final class MainActorValue <Value>: MainActorValueAccessor {
     
     ///
-    public nonisolated var projectedValue: MainActorValue_new<Value> {
+    public nonisolated var projectedValue: MainActorValue<Value> {
         self
     }
     
@@ -150,14 +150,15 @@ public final class MainActorValue_new <Value>: MainActorValueAccessor {
     }
 }
 
+/*
 ///
-public extension MainActorValue_new {
+public extension MainActorValue {
     
     ///
     nonisolated subscript
         <NewValue>
         (dynamicMember keyPath: WritableKeyPath<Value, NewValue>)
-    -> MainActorValue_new<NewValue> {
+    -> MainActorValue<NewValue> {
         
         ///
         .init(
@@ -173,9 +174,10 @@ public extension MainActorValue_new {
         )
     }
 }
+ */
 
 ///
-public extension MainActorValue_new {
+public extension MainActorValue {
     
     ///
     @MainActor
