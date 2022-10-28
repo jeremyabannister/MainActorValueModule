@@ -11,7 +11,7 @@
 
 ///
 @propertyWrapper
-//@dynamicMemberLookup
+@dynamicMemberLookup
 public final class MainActorValue <Value>: MainActorValueAccessor {
     
     ///
@@ -150,7 +150,6 @@ public final class MainActorValue <Value>: MainActorValueAccessor {
     }
 }
 
-/*
 ///
 public extension MainActorValue {
     
@@ -174,7 +173,6 @@ public extension MainActorValue {
         )
     }
 }
- */
 
 ///
 public extension MainActorValue {
