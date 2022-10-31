@@ -11,13 +11,12 @@
 ///
 public protocol MainActorValueAccessor:
     ExpressionErgonomic,
-    ObservableObject,
-    ReferenceType {
-    
-    ///
-    associatedtype Value
+    ObservableObject {
     
     ///
     @MainActor
     var value: Value { get }
+    
+    ///
+    associatedtype Value
 }

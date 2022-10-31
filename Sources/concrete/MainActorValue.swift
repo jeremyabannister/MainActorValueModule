@@ -12,7 +12,10 @@
 ///
 @propertyWrapper
 @dynamicMemberLookup
-public final class MainActorValue <Value>: MainActorValueAccessor {
+public final class MainActorValue
+    <Value>:
+        MainActorValueAccessor,
+        ReferenceType {
     
     ///
     public nonisolated var projectedValue: MainActorValue<Value> {
