@@ -20,28 +20,64 @@ let package = Package(
         ),
     ],
     targets: [
-        .target(
+        
+        ///
+        umbrellaTarget(
             name: "MainActorValueModule",
-            dependencies: [
+            submoduleDependencies: [
                 "map",
                 "concrete"
             ]
         ),
-        .target(
+        
+        ///
+        submoduleTarget(
             name: "map",
-            dependencies: ["concrete"]
+            submoduleDependencies: ["concrete"]
         ),
-        .target(
+        submoduleTarget(
             name: "concrete",
-            dependencies: ["abstract"]
+            submoduleDependencies: ["abstract"]
         ),
-        .target(
+        submoduleTarget(
             name: "abstract",
-            dependencies: ["FoundationToolkit"]
+            otherDependencies: ["FoundationToolkit"]
         ),
+        
+        ///
         .testTarget(
             name: "MainActorValueModule-tests",
             dependencies: ["MainActorValueModule"]
         ),
     ]
 )
+
+///
+func umbrellaTarget
+    (name: String,
+     submoduleDependencies: [String] = [],
+     otherDependencies: [Target.Dependency] = [])
+-> Target {
+    .target(
+        name: name,
+        dependencies:
+            submoduleDependencies
+                .map { .init(stringLiteral: submoduleName($0)) }
+            + otherDependencies
+    )
+}
+func submoduleTarget
+    (name: String,
+     submoduleDependencies: [String] = [],
+     otherDependencies: [Target.Dependency] = [])
+-> Target {
+    .target(
+        name: submoduleName(name),
+        dependencies:
+            submoduleDependencies
+                .map { .init(stringLiteral: submoduleName($0)) }
+            + otherDependencies,
+        path: "Sources/\(name)"
+    )
+}
+func submoduleName (_ name: String) -> String { "MainActorValueModule_\(name)" }

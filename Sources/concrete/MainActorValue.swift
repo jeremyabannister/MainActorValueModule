@@ -7,7 +7,7 @@
 
 ///
 @_exported import Combine
-@_exported import abstract
+@_exported import MainActorValueModule_abstract
 
 ///
 @propertyWrapper

@@ -6,7 +6,7 @@
 //
 
 ///
-@_exported import concrete
+@_exported import MainActorValueModule_concrete
 
 ///
 public extension MainActorValueAccessor {

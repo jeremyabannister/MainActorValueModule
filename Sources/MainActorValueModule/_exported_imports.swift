@@ -6,5 +6,5 @@
 //
 
 ///
-@_exported import concrete
-@_exported import map
+@_exported import MainActorValueModule_concrete
+@_exported import MainActorValueModule_map
