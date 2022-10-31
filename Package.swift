@@ -22,6 +22,13 @@ let package = Package(
     targets: [
         .target(
             name: "MainActorValueModule",
+            dependencies: [
+                "map",
+                "concrete"
+            ]
+        ),
+        .target(
+            name: "map",
             dependencies: ["concrete"]
         ),
         .target(
