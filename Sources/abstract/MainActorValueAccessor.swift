@@ -6,6 +6,7 @@
 //
 
 ///
+@_exported import Combine
 @_exported import FoundationToolkit
 
 ///
@@ -16,6 +17,9 @@ public protocol MainActorValueAccessor:
     ///
     @MainActor
     var value: Value { get }
+    
+    ///
+    var didSet: AnyPublisher<Value, Never> { get }
     
     ///
     associatedtype Value
