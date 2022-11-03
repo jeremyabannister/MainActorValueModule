@@ -65,4 +65,10 @@ public final class MappedMainActorValue
                     objectWillChange.send()
                 })
     }
+    
+    ///
+    @available(*, deprecated, message: "Not implemented - fatalError()")
+    public nonisolated var didSet: AnyPublisher<Value, Never> {
+        fatalError()
+    }
 }
