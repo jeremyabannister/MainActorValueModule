@@ -9,7 +9,7 @@
 @_exported import MainActorValueModule_concrete
 
 ///
-public extension MainActorValueAccessor {
+public extension MainActorValueAccessor where Self: ObservableObject {
     
     ///
     func map
@@ -29,7 +29,8 @@ public extension MainActorValueAccessor {
 @MainActor
 public final class MappedMainActorValue
     <Value>:
-        MainActorValueAccessor {
+        MainActorValueAccessor,
+        ObservableObject {
     
     ///
     public let objectWillChange = ObservableObjectPublisher()
@@ -53,7 +54,7 @@ public final class MappedMainActorValue
     
     ///
     nonisolated init
-        <BaseValueAccessor: MainActorValueAccessor>
+        <BaseValueAccessor: MainActorValueAccessor & ObservableObject>
         (baseValueAccessor: BaseValueAccessor,
          transform: @escaping (BaseValueAccessor.Value)->Value) {
         

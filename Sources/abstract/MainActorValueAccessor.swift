@@ -11,8 +11,7 @@
 
 ///
 public protocol MainActorValueAccessor <Value>:
-    ExpressionErgonomic,
-    ObservableObject {
+    ExpressionErgonomic {
     
     ///
     @MainActor

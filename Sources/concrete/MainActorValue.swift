@@ -13,6 +13,7 @@
 public final class MainActorValue
     <Value>:
         MainActorValueAccessor,
+        ObservableObject,
         ReferenceType {
     
     ///
