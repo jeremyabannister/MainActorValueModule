@@ -10,7 +10,6 @@
 
 ///
 @propertyWrapper
-@dynamicMemberLookup
 public final class MainActorValue
     <Value>:
         MainActorValueAccessor,
@@ -149,30 +148,6 @@ public final class MainActorValue
                 setter(newValue)
             }
         }
-    }
-}
-
-///
-public extension MainActorValue {
-    
-    ///
-    nonisolated subscript
-        <NewValue>
-        (dynamicMember keyPath: WritableKeyPath<Value, NewValue>)
-    -> MainActorValue<NewValue> {
-        
-        ///
-        .init(
-            valueAccess: .computed(
-                getter: { self.wrappedValue[keyPath: keyPath] },
-                setter: { self.wrappedValue[keyPath: keyPath] = $0 }
-            ),
-            objectWillChangePublisher: objectWillChange,
-            didSetPublisher:
-                didSetPublisher
-                    .map { $0[keyPath: keyPath] }
-                    .eraseToAnyPublisher()
-        )
     }
 }
 
