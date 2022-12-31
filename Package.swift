@@ -16,7 +16,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/jeremyabannister/FoundationToolkit",
-            from: "0.4.0"
+            from: "0.4.4"
         ),
     ],
     targets: [
