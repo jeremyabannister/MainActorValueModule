@@ -9,67 +9,58 @@
 @_exported import MainActorValueModule_concrete
 
 ///
-public extension MainActorValueAccessor where Self: ObservableObject {
-    
+public extension MainActorValueAccessor {
+
     ///
     func map
         <NewValue>
         (_ transform: @escaping (Value)->NewValue)
-    -> MappedMainActorValue<NewValue> {
-        
+    -> MappedMainActorValueAccessor<Value, NewValue> {
+
         ///
-        .init(
-            baseValueAccessor: self,
+        MappedMainActorValueAccessor(
+            base: self,
             transform: transform
         )
     }
 }
 
 ///
-@MainActor
-public final class MappedMainActorValue
-    <Value>:
+public actor MappedMainActorValueAccessor
+    <BaseValue,
+     NewValue>:
         MainActorValueAccessor,
         ObservableObject {
     
     ///
-    public let objectWillChange = ObservableObjectPublisher()
+    public typealias Value = NewValue
     
     ///
-    private var connection: Any? = nil
-    
-    ///
-    private let computeValue: @MainActor ()->Value
-    
-    ///
-    public var value: Value { computeValue() }
-    
-    ///
-    nonisolated init
-        (_ computeValue: @escaping @MainActor ()->Value) {
+    public init
+        (base: any MainActorValueAccessor<BaseValue>,
+         transform: @escaping (BaseValue)->Value) {
         
-        ///
-        self.computeValue = computeValue
+        self.base = base
+        self.transform = transform
     }
     
     ///
-    nonisolated init
-        <BaseValueAccessor: MainActorValueAccessor & ObservableObject>
-        (baseValueAccessor: BaseValueAccessor,
-         transform: @escaping (BaseValueAccessor.Value)->Value) {
-        
-        self.computeValue = { transform(baseValueAccessor.value) }
-        self.connection =
-            baseValueAccessor
-                .objectWillChange
-                .sink(receiveValue: { [objectWillChange] _ in
-                    objectWillChange.send()
-                })
+    private let base: any MainActorValueAccessor<BaseValue>
+    
+    ///
+    private let transform: (BaseValue)->NewValue
+    
+    ///
+    @MainActor
+    public var value: Value {
+        transform(base.value)
     }
     
     ///
-    @available(*, deprecated, message: "Not implemented - fatalError()")
-    public nonisolated var didSet: AnyPublisher<Value, Never> {
-        fatalError()
+    public nonisolated var didSet: AnyPublisher<NewValue, Never> {
+        base
+            .didSet
+            .map { [transform] in transform($0) }
+            .eraseToAnyPublisher()
     }
 }
