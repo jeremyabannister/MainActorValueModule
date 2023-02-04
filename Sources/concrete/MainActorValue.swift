@@ -153,6 +153,15 @@ public final class MainActorValue
 }
 
 ///
+extension MainActorValue {
+    
+    ///
+    public convenience init (initialValue: Value) {
+        self.init(wrappedValue: initialValue)
+    }
+}
+
+///
 public extension MainActorValue {
     
     ///
