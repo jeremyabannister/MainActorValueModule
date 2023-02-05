@@ -8,3 +8,7 @@
 ///
 @_exported import MainActorValueModule_concrete
 @_exported import MainActorValueModule_map
+
+///
+public typealias MainActorValue = MainActorValue_old
+public typealias MainActorValueAccessor = MainActorValueAccessor_old

@@ -10,14 +10,14 @@
 
 ///
 @propertyWrapper
-public final class MainActorValue
+public final class MainActorValue_old
     <Value>:
-        MainActorValueAccessor,
+        MainActorValueAccessor_old,
         ObservableObject,
         ReferenceType {
     
     ///
-    public nonisolated var projectedValue: MainActorValue<Value> {
+    public nonisolated var projectedValue: MainActorValue_old<Value> {
         self
     }
     
@@ -153,7 +153,7 @@ public final class MainActorValue
 }
 
 ///
-extension MainActorValue {
+extension MainActorValue_old {
     
     ///
     public convenience init (initialValue: Value) {
@@ -162,7 +162,7 @@ extension MainActorValue {
 }
 
 ///
-public extension MainActorValue {
+public extension MainActorValue_old {
     
     ///
     @MainActor

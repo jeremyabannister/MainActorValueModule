@@ -9,16 +9,16 @@
 @_exported import MainActorValueModule_concrete
 
 ///
-public extension MainActorValueAccessor {
+public extension MainActorValueAccessor_old {
 
     ///
     func map
         <NewValue>
         (_ transform: @escaping (Value)->NewValue)
-    -> MappedMainActorValueAccessor<Value, NewValue> {
+    -> MappedMainActorValueAccessor_old<Value, NewValue> {
 
         ///
-        MappedMainActorValueAccessor(
+        MappedMainActorValueAccessor_old(
             base: self,
             transform: transform
         )
@@ -26,10 +26,10 @@ public extension MainActorValueAccessor {
 }
 
 ///
-public actor MappedMainActorValueAccessor
+public actor MappedMainActorValueAccessor_old
     <BaseValue,
      NewValue>:
-        MainActorValueAccessor,
+        MainActorValueAccessor_old,
         ObservableObject {
     
     ///
@@ -37,7 +37,7 @@ public actor MappedMainActorValueAccessor
     
     ///
     public init
-        (base: any MainActorValueAccessor<BaseValue>,
+        (base: any MainActorValueAccessor_old<BaseValue>,
          transform: @escaping (BaseValue)->Value) {
         
         self.base = base
@@ -45,7 +45,7 @@ public actor MappedMainActorValueAccessor
     }
     
     ///
-    private let base: any MainActorValueAccessor<BaseValue>
+    private let base: any MainActorValueAccessor_old<BaseValue>
     
     ///
     private let transform: (BaseValue)->NewValue

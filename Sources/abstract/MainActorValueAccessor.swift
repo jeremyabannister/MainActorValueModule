@@ -10,7 +10,7 @@
 @_exported import FoundationToolkit
 
 ///
-public protocol MainActorValueAccessor <Value>:
+public protocol MainActorValueAccessor_old <Value>:
     ExpressionErgonomic {
     
     ///
