@@ -23,3 +23,13 @@ public protocol MainActorValueAccessor_old <Value>:
     ///
     associatedtype Value
 }
+
+///
+extension MainActorValueAccessor_old {
+    
+    ///
+    @MainActor
+    public var currentValue: Value {
+        value
+    }
+}

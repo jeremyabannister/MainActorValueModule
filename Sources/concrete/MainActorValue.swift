@@ -156,6 +156,13 @@ public final class MainActorValue_old
 extension MainActorValue_old {
     
     ///
+    @MainActor
+    public var currentValue: Value {
+        get { value }
+        set { value = newValue }
+    }
+    
+    ///
     public convenience init (initialValue: Value) {
         self.init(wrappedValue: initialValue)
     }
