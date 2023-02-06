@@ -27,7 +27,7 @@ extension MainActorValueAccessor_new {
     public func map
         <NewValue>
         (_ transform: @escaping @MainActor (Value)->NewValue)
-    -> some MainActorValueAccessor_new {
+    -> some MainActorValueAccessor_new<NewValue> {
         
         ///
         MappedMainActorValue(
