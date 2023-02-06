@@ -27,7 +27,7 @@ extension MainActorValueAccessor_new {
     public func map
         <NewValue>
         (_ transform: @escaping @MainActor (Value)->NewValue)
-    -> some MainActorValueAccessor_new<NewValue> {
+    -> MappedMainActorValue<NewValue> {
         
         ///
         MappedMainActorValue(
@@ -50,6 +50,7 @@ public struct MappedMainActorValue <Value>: MainActorValueAccessor_new {
         self._fetchCurrentValue = { transform(base.currentValue) }
         self.willSet = MappedReactionHub(base: base.willSet, transform: transform)
         self.didSet = MappedReactionHub(base: base.didSet, transform: transform)
+        self.rootObjectID = base.rootObjectID
     }
     
     ///
@@ -64,6 +65,9 @@ public struct MappedMainActorValue <Value>: MainActorValueAccessor_new {
     ///
     public let willSet: any MainActorReactionManager<Value>
     public let didSet: any MainActorReactionManager<Value>
+    
+    ///
+    public let rootObjectID: ObjectID
 }
 
 ///
@@ -107,7 +111,9 @@ public struct MappedReactionHub <UpstreamEvent,Event>: MainActorReactionManager 
 }
 
 ///
-public actor MainActorValue_new <Value>: MainActorValueAccessor_new {
+public actor MainActorValue_new <Value>:
+    MainActorValueAccessor_new,
+    ReferenceType {
     
     ///
     public init (initialValue: Value) {
@@ -136,6 +142,11 @@ public actor MainActorValue_new <Value>: MainActorValueAccessor_new {
     ///
     private let _willSet = ReactionHub<Value>()
     private let _didSet = ReactionHub<Value>()
+    
+    ///
+    public nonisolated var rootObjectID: ObjectID {
+        self.objectID
+    }
     
     ///
     @MainActor
@@ -225,7 +236,7 @@ extension MainActorValue_new {
 }
 
 ///
-public protocol MainActorValueAccessor_new <Value> {
+public protocol MainActorValueAccessor_new <Value>: HasRootObjectID {
     
     ///
     @MainActor
@@ -239,6 +250,13 @@ public protocol MainActorValueAccessor_new <Value> {
     
     ///
     associatedtype Value
+}
+
+///
+public protocol HasRootObjectID {
+    
+    ///
+    var rootObjectID: ObjectID { get }
 }
 
 ///
