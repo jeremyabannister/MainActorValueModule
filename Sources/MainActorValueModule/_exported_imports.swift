@@ -377,7 +377,7 @@ public actor ReactionRetainer {
     }
     private let unregisterReaction: @MainActor ()->()
     deinit {
-        Task { @MainActor in
+        Task { @MainActor [unregisterReaction] in
             unregisterReaction()
         }
     }
