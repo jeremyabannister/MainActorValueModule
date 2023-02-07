@@ -10,10 +10,5 @@
 @_exported import MainActorValueModule_map
 
 ///
-#if false
 public typealias MainActorValue = MainActorValue_new
 public typealias MainActorValueAccessor = MainActorValueAccessor_new
-#else
-public typealias MainActorValue = MainActorValue_old
-public typealias MainActorValueAccessor = MainActorValueAccessor_old
-#endif
