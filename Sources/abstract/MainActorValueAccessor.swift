@@ -9,11 +9,8 @@
 @_exported import Combine
 @_exported import FoundationToolkit
 
-
-// MARK: - new
-
 ///
-public protocol MainActorValueAccessor_new <Value>: HasRootObjectID {
+public protocol MainActorValueAccessor <Value>: HasRootObjectID {
     
     ///
     @MainActor
@@ -126,33 +123,5 @@ public actor ReactionRetainer {
         Task { @MainActor [unregisterReaction] in
             unregisterReaction()
         }
-    }
-}
-
-
-// MARK: - old
-
-///
-public protocol MainActorValueAccessor_old <Value>:
-    ExpressionErgonomic {
-    
-    ///
-    @MainActor
-    var value: Value { get }
-    
-    ///
-    var didSet: AnyPublisher<Value, Never> { get }
-    
-    ///
-    associatedtype Value
-}
-
-///
-extension MainActorValueAccessor_old {
-    
-    ///
-    @MainActor
-    public var currentValue: Value {
-        value
     }
 }
