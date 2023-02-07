@@ -7,4 +7,5 @@
 
 ///
 @_exported import MainActorValueModule_concrete
+@_exported import MainActorValueModule_combine_compatibility
 @_exported import MainActorValueModule_map

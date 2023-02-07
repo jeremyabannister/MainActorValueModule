@@ -26,11 +26,16 @@ let package = Package(
             name: "MainActorValueModule",
             submoduleDependencies: [
                 "map",
-                "concrete"
+                "combine_compatibility",
+                "concrete",
             ]
         ),
         
         ///
+        submoduleTarget(
+            name: "combine_compatibility",
+            submoduleDependencies: ["concrete"]
+        ),
         submoduleTarget(
             name: "map",
             submoduleDependencies: ["concrete"]
