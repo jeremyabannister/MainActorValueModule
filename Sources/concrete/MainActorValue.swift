@@ -62,11 +62,24 @@ extension MainActorValue {
             
             ///
             switch _valueStorage {
+                
+            ///
             case .value (let value):
+                
+                ///
                 return value
                 
+            ///
             case .notYetComputed (let computeValue):
-                return computeValue()
+                
+                ///
+                let value = computeValue()
+                
+                ///
+                self._valueStorage = .value(value)
+                
+                ///
+                return value
             }
         }
         
