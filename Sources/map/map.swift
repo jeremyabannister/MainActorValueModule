@@ -60,10 +60,10 @@ public struct MappedMainActorValue <Value>: MainActorValueAccessor {
 }
 
 ///
-public struct MappedReactionHub <UpstreamEvent,Event>: MainActorReactionManager {
+fileprivate struct MappedReactionHub <UpstreamEvent,Event>: MainActorReactionManager {
     
     ///
-    internal init
+    init
         (base: some MainActorReactionManager<UpstreamEvent>,
          transform: @escaping @MainActor (UpstreamEvent)->Event) {
         
@@ -78,7 +78,7 @@ public struct MappedReactionHub <UpstreamEvent,Event>: MainActorReactionManager 
     private let transform: @MainActor (UpstreamEvent)->Event
     
     ///
-    public func registerReaction_weakClosure
+    func registerReaction_weakClosure
         (key: String,
          _ reaction: @escaping @MainActor (Event)->())
     -> @MainActor ()->() {
@@ -90,7 +90,7 @@ public struct MappedReactionHub <UpstreamEvent,Event>: MainActorReactionManager 
     }
     
     ///
-    public func unregisterReaction_weakClosure
+    func unregisterReaction_weakClosure
         (forKey key: String)
     -> @MainActor ()->() {
         
