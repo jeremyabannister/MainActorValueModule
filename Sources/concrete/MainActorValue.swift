@@ -104,10 +104,10 @@ extension MainActorValue {
 }
 
 ///
-public actor ReactionHub <Event>: MainActorReactionManager {
+fileprivate actor ReactionHub <Event>: MainActorReactionManager {
     
     ///
-    public init () { }
+    init () { }
     
     ///
     @MainActor
@@ -119,13 +119,13 @@ public actor ReactionHub <Event>: MainActorReactionManager {
     
     ///
     @MainActor
-    internal var orderedReactions: [@MainActor (Event)->()] {
+    var orderedReactions: [@MainActor (Event)->()] {
         orderedReactionKeys
             .compactMap { reactions[$0] }
     }
     
     ///
-    public nonisolated func registerReaction_weakClosure
+    nonisolated func registerReaction_weakClosure
         (key: String,
          _ reaction: @escaping @MainActor (Event)->())
     -> @MainActor ()->() {
@@ -153,7 +153,7 @@ public actor ReactionHub <Event>: MainActorReactionManager {
     }
     
     ///
-    public nonisolated func unregisterReaction_weakClosure
+    nonisolated func unregisterReaction_weakClosure
         (forKey key: String)
     -> @MainActor () -> () {
         
