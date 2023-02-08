@@ -35,17 +35,23 @@ public actor MainActorValue <Value>:
     }
     
     ///
-    public nonisolated var willSet: any MainActorReactionManager<Value> { _willSet }
-    public nonisolated var didSet: any MainActorReactionManager<Value> { _didSet }
-    
-    ///
     private let _willSet = ReactionHub<Value>()
     private let _didSet = ReactionHub<Value>()
+}
+
+///
+extension MainActorValue {
     
     ///
     public nonisolated var rootObjectID: ObjectID {
-        self.objectID
+        
+        /// `MainActorValue` is an actual reference type (an "object") and therefore it is its own "rootObject", and therefore it returns its own objectID as the "rootObjectID".
+        return self.objectID
     }
+    
+    ///
+    public nonisolated var willSet: any MainActorReactionManager<Value> { _willSet }
+    public nonisolated var didSet: any MainActorReactionManager<Value> { _didSet }
     
     ///
     @MainActor
@@ -81,10 +87,6 @@ public actor MainActorValue <Value>:
             }
         }
     }
-}
-
-///
-extension MainActorValue {
     
     ///
     @MainActor
