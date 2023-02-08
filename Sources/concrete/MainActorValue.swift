@@ -114,27 +114,6 @@ extension MainActorValue {
 }
 
 ///
-extension MainActorValue {
-    
-    ///
-    @available(*, deprecated, message: "Use `init(uninitializedValue:)` and add your didSet reaction manually. This initializer will be removed soon.")
-    public init
-        (uninitializedValue: @escaping @MainActor ()->Value,
-         didSet: @escaping @MainActor (Value)->()) {
-        
-        ///
-        self.init(uninitializedValue: uninitializedValue)
-        
-        ///
-        Task { @MainActor in
-            self
-                .didSet
-                .registerReaction(didSet)
-        }
-    }
-}
-
-///
 public actor ReactionHub <Event>: MainActorReactionManager {
     
     ///
