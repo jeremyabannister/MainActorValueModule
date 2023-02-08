@@ -16,12 +16,21 @@ public actor MainActorValue <Value>:
     
     ///
     public init (initialValue: Value) {
-        self._valueStorage = .value(initialValue)
+        self.init(
+            _valueStorage: .value(initialValue)
+        )
     }
     
     ///
     public init (uninitializedValue: @escaping @MainActor ()->Value) {
-        self._valueStorage = .notYetComputed(uninitializedValue)
+        self.init(
+            _valueStorage: .notYetComputed(uninitializedValue)
+        )
+    }
+    
+    ///
+    private init (_valueStorage: ValueStorage) {
+        self._valueStorage = _valueStorage
     }
     
     ///
