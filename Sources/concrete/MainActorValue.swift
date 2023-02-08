@@ -102,18 +102,6 @@ extension MainActorValue {
 }
 
 ///
-extension MainActorValue {
-    
-    ///
-    @available(*, deprecated, message: "Use `currentValue` instead, this property will be removed soon.")
-    @MainActor
-    public var value: Value {
-        get { currentValue }
-        set { currentValue = newValue }
-    }
-}
-
-///
 public actor ReactionHub <Event>: MainActorReactionManager {
     
     ///
