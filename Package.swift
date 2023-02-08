@@ -28,17 +28,25 @@ let package = Package(
                 "map",
                 "combine_compatibility",
                 "concrete",
+                "ergonomics",
             ]
         ),
         
         ///
         submoduleTarget(
             name: "combine_compatibility",
-            submoduleDependencies: ["concrete"]
+            submoduleDependencies: [
+                "concrete",
+                "ergonomics",
+            ]
         ),
         submoduleTarget(
             name: "map",
             submoduleDependencies: ["concrete"]
+        ),
+        submoduleTarget(
+            name: "ergonomics",
+            submoduleDependencies: ["abstract"]
         ),
         submoduleTarget(
             name: "concrete",

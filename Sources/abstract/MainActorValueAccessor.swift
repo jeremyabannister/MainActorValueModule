@@ -6,7 +6,6 @@
 //
 
 ///
-@_exported import Combine
 @_exported import FoundationToolkit
 
 ///
@@ -24,13 +23,6 @@ public protocol MainActorValueAccessor <Value>: HasRootObjectID {
     
     ///
     associatedtype Value
-}
-
-///
-public protocol HasRootObjectID {
-    
-    ///
-    var rootObjectID: ObjectID { get }
 }
 
 ///
@@ -52,76 +44,8 @@ public protocol MainActorReactionManager <Event> {
 }
 
 ///
-extension MainActorReactionManager {
+public protocol HasRootObjectID {
     
     ///
-    @MainActor
-    func registerReaction
-        (key: String,
-         _ reaction: @escaping @MainActor (Event)->()) {
-        
-        ///
-        registerReaction_weakClosure(key: key, reaction)()
-    }
-    
-    ///
-    @MainActor
-    public func unregisterReaction
-        (forKey key: String) {
-        
-        ///
-        unregisterReaction_weakClosure(forKey: key)()
-    }
-}
-
-///
-extension MainActorReactionManager {
-    
-    ///
-    @MainActor
-    public func registerReactionPermanently
-        (_ reaction: @escaping @MainActor (Event)->()) {
-        
-        ///
-        registerReaction(key: UUID().uuidString, reaction)
-    }
-}
-
-///
-extension MainActorReactionManager {
-    
-    ///
-    @MainActor
-    public func registerReaction
-        (_ reaction: @escaping @MainActor (Event)->())
-    -> ReactionRetainer {
-        
-        ///
-        let key = UUID().uuidString
-        
-        ///
-        registerReaction(key: key, reaction)
-        
-        ///
-        let reactionRetainer =
-            ReactionRetainer(
-                unregisterReaction: self.unregisterReaction_weakClosure(forKey: key)
-            )
-        
-        ///
-        return reactionRetainer
-    }
-}
-
-///
-public actor ReactionRetainer {
-    fileprivate init (unregisterReaction: @escaping @MainActor ()->()) {
-        self.unregisterReaction = unregisterReaction
-    }
-    private let unregisterReaction: @MainActor ()->()
-    deinit {
-        Task { @MainActor [unregisterReaction] in
-            unregisterReaction()
-        }
-    }
+    var rootObjectID: ObjectID { get }
 }

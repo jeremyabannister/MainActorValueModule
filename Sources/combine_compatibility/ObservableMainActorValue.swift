@@ -6,7 +6,9 @@
 //
 
 ///
+@_exported import Combine
 @_exported import MainActorValueModule_concrete
+@_exported import MainActorValueModule_ergonomics
 
 
 // MARK: - ObservableMainActorValue
