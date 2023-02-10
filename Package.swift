@@ -61,6 +61,13 @@ let package = Package(
             submoduleDependencies: ["main_actor_value_accessor"]
         ),
         submoduleTarget(
+            name: "subscribable_main_actor_value_accessor",
+            submoduleDependencies: [
+                "main_actor_value_source_monitor",
+                "reaction_hub",
+            ]
+        ),
+        submoduleTarget(
             name: "main_actor_value_source_monitor",
             submoduleDependencies: ["main_actor_value_source"]
         ),
