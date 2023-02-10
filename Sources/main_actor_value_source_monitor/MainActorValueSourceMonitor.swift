@@ -50,9 +50,9 @@ public actor MainActorValueSourceMonitor {
     
     ///
     @MainActor
-    fileprivate func report (accessOf source: any MainActorValueSource) {
-        for (key, accessLog) in valueAccessLogs {
-            valueAccessLogs[key] =
+    public func report (accessOf source: any MainActorValueSource) {
+        for (key, accessLog) in logsOfAccessesToSources {
+            logsOfAccessesToSources[key] =
                 accessLog
                     .setting(
                         \.[source.objectID],

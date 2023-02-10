@@ -52,6 +52,7 @@ let package = Package(
             name: "main_actor_value",
             submoduleDependencies: [
                 "main_actor_value_source",
+                "main_actor_value_source_monitor",
                 "reaction_hub",
             ]
         ),
