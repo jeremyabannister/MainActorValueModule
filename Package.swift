@@ -60,6 +60,10 @@ let package = Package(
             submoduleDependencies: ["main_actor_value_accessor"]
         ),
         submoduleTarget(
+            name: "main_actor_value_source",
+            submoduleDependencies: ["main_actor_value_accessor"]
+        ),
+        submoduleTarget(
             name: "main_actor_value_accessor",
             otherDependencies: ["FoundationToolkit"]
         ),
