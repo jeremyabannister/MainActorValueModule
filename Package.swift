@@ -6,7 +6,7 @@ import PackageDescription
 ///
 let package = Package(
     name: "MainActorValueModule",
-    platforms: [.macOS(.v10_15), .iOS(.v13), .watchOS(.v6), .tvOS(.v13)],
+    platforms: [.macOS(.v13), .iOS(.v16), .watchOS(.v6), .tvOS(.v13)],
     products: [
         .library(
             name: "MainActorValueModule",
@@ -46,21 +46,21 @@ let package = Package(
         ),
         submoduleTarget(
             name: "ergonomics",
-            submoduleDependencies: ["abstract"]
+            submoduleDependencies: ["main_actor_value_accessor"]
         ),
         submoduleTarget(
             name: "main_actor_value",
             submoduleDependencies: [
-                "abstract",
+                "main_actor_value_accessor",
                 "reaction_hub",
             ]
         ),
         submoduleTarget(
             name: "reaction_hub",
-            submoduleDependencies: ["abstract"]
+            submoduleDependencies: ["main_actor_value_accessor"]
         ),
         submoduleTarget(
-            name: "abstract",
+            name: "main_actor_value_accessor",
             otherDependencies: ["FoundationToolkit"]
         ),
         

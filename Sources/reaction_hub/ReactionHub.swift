@@ -6,7 +6,7 @@
 //
 
 ///
-@_exported import MainActorValueModule_abstract
+@_exported import MainActorValueModule_main_actor_value_accessor
 
 ///
 public actor ReactionHub <Event>: MainActorReactionManager {
