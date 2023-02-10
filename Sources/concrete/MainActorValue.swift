@@ -46,6 +46,7 @@ public actor MainActorValue <Value>:
     ///
     private let _willSet = ReactionHub<Void>()
     private let _didSet = ReactionHub<Value>()
+    private let _didAccess = ReactionHub<Value>()
 }
 
 ///
@@ -61,6 +62,7 @@ extension MainActorValue {
     ///
     public nonisolated var willSet: any MainActorReactionManager<Void> { _willSet }
     public nonisolated var didSet: any MainActorReactionManager<Value> { _didSet }
+    public nonisolated var didAccess: any MainActorReactionManager<Value> { _didAccess }
     
     ///
     @MainActor
@@ -70,10 +72,20 @@ extension MainActorValue {
         get {
             
             ///
+            func reportAccess (of value: Value) {
+                for reaction in self._didAccess.orderedReactions {
+                    reaction(value)
+                }
+            }
+            
+            ///
             switch _valueStorage {
                 
             ///
             case .value (let value):
+                
+                ///
+                reportAccess(of: value)
                 
                 ///
                 return value
@@ -86,6 +98,9 @@ extension MainActorValue {
                 
                 ///
                 self._valueStorage = .value(value)
+                
+                ///
+                reportAccess(of: value)
                 
                 ///
                 return value

@@ -22,6 +22,9 @@ public protocol MainActorValueAccessor <Value>: HasRootObjectID {
     var didSet: any MainActorReactionManager<Value> { get }
     
     ///
+    var didAccess: any MainActorReactionManager<Value> { get }
+    
+    ///
     associatedtype Value
 }
 

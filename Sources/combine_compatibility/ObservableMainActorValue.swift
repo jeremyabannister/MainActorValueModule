@@ -87,6 +87,11 @@ public actor ObservableMainActorValueAccessor <Value>:
     }
     
     ///
+    public nonisolated var didAccess: any MainActorReactionManager<Value> {
+        mainActorValue.didAccess
+    }
+    
+    ///
     @MainActor
     public var currentValue: Value {
         mainActorValue.currentValue
@@ -128,6 +133,11 @@ public actor ObservableMainActorValue <Value>:
     ///
     public nonisolated var didSet: any MainActorReactionManager<Value> {
         mainActorValue.didSet
+    }
+    
+    ///
+    public nonisolated var didAccess: any MainActorReactionManager<Value> {
+        mainActorValue.didAccess
     }
     
     ///
