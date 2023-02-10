@@ -6,5 +6,6 @@
 //
 
 ///
+@_exported import MainActorValueModule_ergonomics
 @_exported import MainActorValueModule_main_actor_value_source_monitor
 @_exported import MainActorValueModule_reaction_hub
