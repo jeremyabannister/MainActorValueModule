@@ -51,7 +51,7 @@ let package = Package(
         submoduleTarget(
             name: "main_actor_value",
             submoduleDependencies: [
-                "main_actor_value_accessor",
+                "main_actor_value_source",
                 "reaction_hub",
             ]
         ),

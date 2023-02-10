@@ -6,13 +6,13 @@
 //
 
 ///
-@_exported import MainActorValueModule_main_actor_value_accessor
+@_exported import MainActorValueModule_main_actor_value_source
 @_exported import MainActorValueModule_reaction_hub
 
 
 ///
 public actor MainActorValue <Value>:
-    MainActorValueAccessor,
+    MainActorValueSource,
     ReferenceType {
     
     ///
