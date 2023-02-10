@@ -6,7 +6,7 @@
 //
 
 ///
-@_exported import MainActorValueModule_concrete
+@_exported import MainActorValueModule_main_actor_value
 
 
 ///

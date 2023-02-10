@@ -6,6 +6,7 @@
 //
 
 ///
-@_exported import MainActorValueModule_concrete
 @_exported import MainActorValueModule_combine_compatibility
+@_exported import MainActorValueModule_ergonomics
+@_exported import MainActorValueModule_main_actor_value
 @_exported import MainActorValueModule_map

@@ -7,6 +7,7 @@
 
 ///
 @_exported import MainActorValueModule_abstract
+@_exported import MainActorValueModule_reaction_hub
 
 
 ///
@@ -137,77 +138,5 @@ extension MainActorValue {
         var copy = currentValue
         mutation(&copy)
         self.currentValue = copy
-    }
-}
-
-///
-fileprivate actor ReactionHub <Event>: MainActorReactionManager {
-    
-    ///
-    init () { }
-    
-    ///
-    @MainActor
-    private var reactions: [String: @MainActor (Event)->()] = [:]
-    
-    ///
-    @MainActor
-    private var orderedReactionKeys: [String] = []
-    
-    ///
-    @MainActor
-    var orderedReactions: [@MainActor (Event)->()] {
-        orderedReactionKeys
-            .compactMap { reactions[$0] }
-    }
-    
-    ///
-    nonisolated func registerReaction_weakClosure
-        (key: String,
-         _ reaction: @escaping @MainActor (Event)->())
-    -> @MainActor ()->() {
-        
-        ///
-        return { [weak self] in
-            
-            ///
-            guard let self else { return }
-            
-            ///
-            if self.reactions.keys.contains(key) {
-                
-                ///
-                self.orderedReactionKeys.removeAll(where: { $0 == key })
-                
-            }
-            
-            ///
-            self.orderedReactionKeys.append(key)
-            
-            ///
-            self.reactions[key] = reaction
-        }
-    }
-    
-    ///
-    nonisolated func unregisterReaction_weakClosure
-        (forKey key: String)
-    -> @MainActor () -> () {
-        
-        return { [weak self] in
-            
-            ///
-            guard let self else { return }
-            
-            ///
-            if self.reactions.keys.contains(key) {
-                
-                ///
-                self.orderedReactionKeys.removeAll(where: { $0 == key })
-                
-                ///
-                self.reactions.removeValue(forKey: key)
-            }
-        }
     }
 }

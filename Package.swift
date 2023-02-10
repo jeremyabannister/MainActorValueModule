@@ -25,10 +25,10 @@ let package = Package(
         umbrellaTarget(
             name: "MainActorValueModule",
             submoduleDependencies: [
-                "map",
                 "combine_compatibility",
-                "concrete",
                 "ergonomics",
+                "main_actor_value",
+                "map",
             ]
         ),
         
@@ -36,20 +36,27 @@ let package = Package(
         submoduleTarget(
             name: "combine_compatibility",
             submoduleDependencies: [
-                "concrete",
                 "ergonomics",
+                "main_actor_value",
             ]
         ),
         submoduleTarget(
             name: "map",
-            submoduleDependencies: ["concrete"]
+            submoduleDependencies: ["main_actor_value"]
         ),
         submoduleTarget(
             name: "ergonomics",
             submoduleDependencies: ["abstract"]
         ),
         submoduleTarget(
-            name: "concrete",
+            name: "main_actor_value",
+            submoduleDependencies: [
+                "abstract",
+                "reaction_hub",
+            ]
+        ),
+        submoduleTarget(
+            name: "reaction_hub",
             submoduleDependencies: ["abstract"]
         ),
         submoduleTarget(
