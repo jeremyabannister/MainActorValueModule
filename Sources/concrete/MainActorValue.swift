@@ -44,7 +44,7 @@ public actor MainActorValue <Value>:
     }
     
     ///
-    private let _willSet = ReactionHub<Value>()
+    private let _willSet = ReactionHub<Void>()
     private let _didSet = ReactionHub<Value>()
 }
 
@@ -59,7 +59,7 @@ extension MainActorValue {
     }
     
     ///
-    public nonisolated var willSet: any MainActorReactionManager<Value> { _willSet }
+    public nonisolated var willSet: any MainActorReactionManager<Void> { _willSet }
     public nonisolated var didSet: any MainActorReactionManager<Value> { _didSet }
     
     ///
@@ -97,7 +97,7 @@ extension MainActorValue {
             
             ///
             for reaction in _willSet.orderedReactions {
-                reaction(newValue)
+                reaction(())
             }
             
             ///

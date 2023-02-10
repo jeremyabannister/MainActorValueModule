@@ -16,7 +16,7 @@ public protocol MainActorValueAccessor <Value>: HasRootObjectID {
     var currentValue: Value { get }
     
     ///
-    var willSet: any MainActorReactionManager<Value> { get }
+    var willSet: any MainActorReactionManager<Void> { get }
     
     ///
     var didSet: any MainActorReactionManager<Value> { get }

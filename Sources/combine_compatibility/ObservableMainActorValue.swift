@@ -77,7 +77,7 @@ public actor ObservableMainActorValueAccessor <Value>:
     }
     
     ///
-    public nonisolated var willSet: any MainActorReactionManager<Value> {
+    public nonisolated var willSet: any MainActorReactionManager<Void> {
         mainActorValue.willSet
     }
     
@@ -121,7 +121,7 @@ public actor ObservableMainActorValue <Value>:
     }
     
     ///
-    public nonisolated var willSet: any MainActorReactionManager<Value> {
+    public nonisolated var willSet: any MainActorReactionManager<Void> {
         mainActorValue.willSet
     }
     
