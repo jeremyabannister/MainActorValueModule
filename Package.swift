@@ -38,6 +38,7 @@ let package = Package(
             submoduleDependencies: [
                 "ergonomics",
                 "main_actor_value",
+                "subscribable_main_actor_value_accessor",
             ]
         ),
         submoduleTarget(

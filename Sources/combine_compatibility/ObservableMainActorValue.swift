@@ -9,6 +9,7 @@
 @_exported import Combine
 @_exported import MainActorValueModule_ergonomics
 @_exported import MainActorValueModule_main_actor_value
+@_exported import MainActorValueModule_subscribable_main_actor_value_accessor
 
 
 // MARK: - ObservableMainActorValue
