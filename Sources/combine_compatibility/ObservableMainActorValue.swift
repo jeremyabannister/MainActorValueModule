@@ -136,13 +136,6 @@ public actor ObservableMainActorValue <Value>:
         get { mainActorValue.currentValue }
         set { mainActorValue.currentValue = newValue }
     }
-    
-    ///
-    @MainActor
-    public var value: Value {
-        get { currentValue }
-        set { currentValue = newValue }
-    }
 }
 
 ///
