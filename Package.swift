@@ -43,7 +43,10 @@ let package = Package(
         ),
         submoduleTarget(
             name: "map",
-            submoduleDependencies: ["main_actor_value"]
+            submoduleDependencies: [
+                "main_actor_value",
+                "mapped_reaction_hub",
+            ]
         ),
         submoduleTarget(
             name: "ergonomics",
@@ -56,6 +59,10 @@ let package = Package(
                 "main_actor_value_source_monitor",
                 "reaction_hub",
             ]
+        ),
+        submoduleTarget(
+            name: "mapped_reaction_hub",
+            submoduleDependencies: ["reaction_hub"]
         ),
         submoduleTarget(
             name: "reaction_hub",

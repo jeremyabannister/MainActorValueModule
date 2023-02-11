@@ -7,6 +7,7 @@
 
 ///
 @_exported import MainActorValueModule_main_actor_value
+@_exported import MainActorValueModule_mapped_reaction_hub
 
 
 ///
@@ -59,44 +60,4 @@ public struct MappedMainActorValue <Value>: MainActorValueAccessor {
     
     ///
     public let rootObjectID: ObjectID
-}
-
-///
-fileprivate struct MappedReactionHub <UpstreamEvent,Event>: MainActorReactionManager {
-    
-    ///
-    init
-        (base: some MainActorReactionManager<UpstreamEvent>,
-         transform: @escaping @MainActor (UpstreamEvent)->Event) {
-        
-        self.base = base
-        self.transform = transform
-    }
-    
-    ///
-    private let base: any MainActorReactionManager<UpstreamEvent>
-    
-    ///
-    private let transform: @MainActor (UpstreamEvent)->Event
-    
-    ///
-    func registerReaction_weakClosure
-        (key: String,
-         _ reaction: @escaping @MainActor (Event)->())
-    -> @MainActor ()->() {
-        
-        ///
-        base.registerReaction_weakClosure(key: key) {
-            reaction(transform($0))
-        }
-    }
-    
-    ///
-    func unregisterReaction_weakClosure
-        (forKey key: String)
-    -> @MainActor ()->() {
-        
-        ///
-        base.unregisterReaction_weakClosure(forKey: key)
-    }
 }
