@@ -10,10 +10,28 @@
 
 
 ///
+extension MainActorReactionManager {
+    
+    ///
+    public func map
+        <NewEvent>
+        (_ transform: @escaping @MainActor (Event)->NewEvent)
+    -> MappedReactionHub<Event, NewEvent> {
+        
+        ///
+        .init(
+            base: self,
+            transform: transform
+        )
+    }
+}
+
+
+///
 public struct MappedReactionHub <UpstreamEvent, Event>: MainActorReactionManager {
     
     ///
-    public init
+    fileprivate init
         (base: some MainActorReactionManager<UpstreamEvent>,
          transform: @escaping @MainActor (UpstreamEvent)->Event) {
         
