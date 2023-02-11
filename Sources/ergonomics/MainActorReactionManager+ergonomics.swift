@@ -13,7 +13,7 @@ extension MainActorReactionManager {
     
     ///
     @MainActor
-    func registerReaction
+    public func registerReaction
         (key: String,
          _ reaction: @escaping @MainActor (Event)->()) {
         
