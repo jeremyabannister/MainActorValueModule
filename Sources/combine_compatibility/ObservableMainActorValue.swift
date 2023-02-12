@@ -7,7 +7,6 @@
 
 ///
 @_exported import Combine
-@_exported import MainActorValueModule_ergonomics
 @_exported import MainActorValueModule_main_actor_value
 @_exported import MainActorValueModule_subscribable_main_actor_value_accessor
 
@@ -57,45 +56,72 @@ public actor ObservableMainActorValueAccessor <Value>:
     ReferenceType {
     
     ///
+    private let uuid = UUID()
+    
+    ///
     @MainActor
     fileprivate init
         (mainActorValue: some MainActorValueAccessor<Value>) {
         
         ///
-        self.objectWillChange = properlyConfiguredObjectWillChange(for: mainActorValue)
-        self.mainActorValue = mainActorValue
+        let objectWillChange = PassthroughSubject<Void, Never>()
+        
+        ///
+        self.objectWillChange = objectWillChange.eraseToAnyPublisher()
+        
+        ///
+        let subscribableValue = mainActorValue.madeSubscribable()
+        
+        ///
+        self.subscribableValue = subscribableValue
+        
+        ///
+        subscribableValue
+            .willSet
+            .registerReaction(key: self.uuid.uuidString) { [objectWillChange] _ in
+                objectWillChange.send()
+            }
+    }
+    
+    ///
+    private let subscribableValue: SubscribableMainActorValueAccessor<Value>
+    
+    ///
+    deinit {
+        Task { @MainActor [subscribableValue, uuid] in
+            subscribableValue
+                .willSet
+                .unregisterReaction(forKey: uuid.uuidString)
+        }
     }
     
     ///
     public nonisolated let objectWillChange: AnyPublisher<Void, Never>
     
     ///
-    private let mainActorValue: any MainActorValueAccessor<Value>
-    
-    ///
     public nonisolated var rootObjectID: ObjectID {
-        mainActorValue.rootObjectID
+        fatalError()
     }
     
     ///
-    public nonisolated var willSet: any MainActorReactionManager<Void> {
-        mainActorValue.willSet
+    public nonisolated var willSet: any Interface_MainActorReactionManager<Void> {
+        subscribableValue.willSet
     }
     
     ///
-    public nonisolated var didSet: any MainActorReactionManager<Value> {
-        mainActorValue.didSet
+    public nonisolated var didSet: any Interface_MainActorReactionManager<Value> {
+        subscribableValue.didSet
     }
     
     ///
-    public nonisolated var didAccess: any MainActorReactionManager<Value> {
-        mainActorValue.didAccess
+    public nonisolated var didAccess: any Interface_MainActorReactionManager<Value> {
+        fatalError()
     }
     
     ///
     @MainActor
     public var currentValue: Value {
-        mainActorValue.currentValue
+        subscribableValue.currentValue
     }
 }
 
@@ -111,15 +137,39 @@ public actor ObservableMainActorValue <Value>:
         (mainActorValue: MainActorValue<Value>) {
         
         ///
-        self.objectWillChange = properlyConfiguredObjectWillChange(for: mainActorValue)
+        let objectWillChange = PassthroughSubject<Void, Never>()
+        
+        ///
+        self.objectWillChange = objectWillChange.eraseToAnyPublisher()
+        
+        ///
         self.mainActorValue = mainActorValue
+        
+        ///
+        mainActorValue
+            .willSet
+            .registerReaction(key: self.uuid.uuidString) { [objectWillChange] _ in
+                objectWillChange.send()
+            }
+    }
+    
+    ///
+    private let uuid = UUID()
+    
+    ///
+    private let mainActorValue: MainActorValue<Value>
+    
+    ///
+    deinit {
+        Task { @MainActor [mainActorValue, uuid] in
+            mainActorValue
+                .willSet
+                .unregisterReaction(forKey: uuid.uuidString)
+        }
     }
     
     ///
     public nonisolated let objectWillChange: AnyPublisher<Void, Never>
-    
-    ///
-    private let mainActorValue: MainActorValue<Value>
     
     ///
     public nonisolated var rootObjectID: ObjectID {
@@ -127,17 +177,17 @@ public actor ObservableMainActorValue <Value>:
     }
     
     ///
-    public nonisolated var willSet: any MainActorReactionManager<Void> {
+    public nonisolated var willSet: any Interface_MainActorReactionManager<Void> {
         mainActorValue.willSet
     }
     
     ///
-    public nonisolated var didSet: any MainActorReactionManager<Value> {
+    public nonisolated var didSet: any Interface_MainActorReactionManager<Value> {
         mainActorValue.didSet
     }
     
     ///
-    public nonisolated var didAccess: any MainActorReactionManager<Value> {
+    public nonisolated var didAccess: any Interface_MainActorReactionManager<Value> {
         mainActorValue.didAccess
     }
     
@@ -147,57 +197,4 @@ public actor ObservableMainActorValue <Value>:
         get { mainActorValue.currentValue }
         set { mainActorValue.currentValue = newValue }
     }
-}
-
-///
-@MainActor
-fileprivate func properlyConfiguredObjectWillChange
-    (for valueAccessor: some MainActorValueAccessor)
--> AnyPublisher<Void, Never> {
-    
-    ///
-    if let preexisting = MainActorValueAccessor_objectWillChange.currentValue[valueAccessor.rootObjectID] {
-        
-        ///
-        return preexisting.objectWillChange
-        
-    } else {
-        
-        ///
-        let subject = PassthroughSubject<Void, Never>()
-        
-        ///
-        let connection =
-            valueAccessor
-                .willSet
-                .registerReaction { _ in
-                    subject.send()
-                }
-        
-        ///
-        let newConnectedObjectWillChange =
-            ConnectedObjectWillChange(
-                objectWillChange: subject.eraseToAnyPublisher(),
-                connection: connection
-            )
-        
-        ///
-        MainActorValueAccessor_objectWillChange
-            .mutateValue {
-                $0[valueAccessor.rootObjectID] = newConnectedObjectWillChange
-            }
-        
-        ///
-        return newConnectedObjectWillChange.objectWillChange
-    }
-}
-
-///
-fileprivate let MainActorValueAccessor_objectWillChange: MainActorValue<[ObjectID: ConnectedObjectWillChange]>
-    = .init(initialValue: [:])
-
-///
-fileprivate struct ConnectedObjectWillChange: ExpressionErgonomic {
-    let objectWillChange: AnyPublisher<Void, Never>
-    let connection: Any
 }

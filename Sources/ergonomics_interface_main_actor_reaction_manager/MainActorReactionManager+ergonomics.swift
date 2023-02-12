@@ -6,10 +6,12 @@
 //
 
 ///
-@_exported import MainActorValueModule_main_actor_value_accessor
+@_exported import Foundation
+@_exported import MainActorValueModule_interface_main_actor_reaction_manager
+
 
 ///
-extension MainActorReactionManager {
+extension Interface_MainActorReactionManager {
     
     ///
     @MainActor
@@ -32,7 +34,7 @@ extension MainActorReactionManager {
 }
 
 ///
-extension MainActorReactionManager {
+extension Interface_MainActorReactionManager {
     
     ///
     @MainActor
@@ -45,7 +47,7 @@ extension MainActorReactionManager {
 }
 
 ///
-extension MainActorReactionManager {
+extension Interface_MainActorReactionManager {
     
     ///
     @MainActor

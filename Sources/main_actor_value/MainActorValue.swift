@@ -8,7 +8,6 @@
 ///
 @_exported import MainActorValueModule_main_actor_value_source
 @_exported import MainActorValueModule_main_actor_value_source_monitor
-@_exported import MainActorValueModule_main_actor_reaction_hub
 
 
 ///
@@ -46,9 +45,9 @@ public actor MainActorValue <Value>:
     }
     
     ///
-    private let _willSet = MainActorReactionHub<Void>()
-    private let _didSet = MainActorReactionHub<Value>()
-    private let _didAccess = MainActorReactionHub<Value>()
+    private let _willSet = MainActorReactionManager<Void>()
+    private let _didSet = MainActorReactionManager<Value>()
+    private let _didAccess = MainActorReactionManager<Value>()
 }
 
 ///
@@ -62,9 +61,9 @@ extension MainActorValue {
     }
     
     ///
-    public nonisolated var willSet: any MainActorReactionManager<Void> { _willSet }
-    public nonisolated var didSet: any MainActorReactionManager<Value> { _didSet }
-    public nonisolated var didAccess: any MainActorReactionManager<Value> { _didAccess }
+    public nonisolated var willSet: any Interface_MainActorReactionManager<Void> { _willSet }
+    public nonisolated var didSet: any Interface_MainActorReactionManager<Value> { _didSet }
+    public nonisolated var didAccess: any Interface_MainActorReactionManager<Value> { _didAccess }
     
     ///
     @MainActor

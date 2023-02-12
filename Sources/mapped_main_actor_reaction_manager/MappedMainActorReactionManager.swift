@@ -1,22 +1,22 @@
 //
-//  MappedMainActorReactionHub.swift
+//  MappedMainActorReactionManager.swift
 //  
 //
 //  Created by Jeremy Bannister on 2/11/23.
 //
 
 ///
-@_exported import MainActorValueModule_main_actor_reaction_hub
+@_exported import MainActorValueModule_interface_main_actor_reaction_manager
 
 
 ///
-extension MainActorReactionManager {
+extension Interface_MainActorReactionManager {
     
     ///
     public func map
         <NewEvent>
         (_ transform: @escaping @MainActor (Event)->NewEvent)
-    -> MappedMainActorReactionHub<Event, NewEvent> {
+    -> MappedMainActorReactionManager<Event, NewEvent> {
         
         ///
         .init(
@@ -28,11 +28,14 @@ extension MainActorReactionManager {
 
 
 ///
-public struct MappedMainActorReactionHub <UpstreamEvent, Event>: MainActorReactionManager {
+public struct MappedMainActorReactionManager
+    <UpstreamEvent,
+     Event>:
+        Interface_MainActorReactionManager {
     
     ///
     fileprivate init
-        (base: some MainActorReactionManager<UpstreamEvent>,
+        (base: some Interface_MainActorReactionManager<UpstreamEvent>,
          transform: @escaping @MainActor (UpstreamEvent)->Event) {
         
         self.base = base
@@ -40,7 +43,7 @@ public struct MappedMainActorReactionHub <UpstreamEvent, Event>: MainActorReacti
     }
     
     ///
-    private let base: any MainActorReactionManager<UpstreamEvent>
+    private let base: any Interface_MainActorReactionManager<UpstreamEvent>
     
     ///
     private let transform: @MainActor (UpstreamEvent)->Event

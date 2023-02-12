@@ -26,7 +26,6 @@ let package = Package(
             name: "MainActorValueModule",
             submoduleDependencies: [
                 "combine_compatibility",
-                "ergonomics",
                 "main_actor_value",
                 "map",
             ]
@@ -36,7 +35,6 @@ let package = Package(
         submoduleTarget(
             name: "combine_compatibility",
             submoduleDependencies: [
-                "ergonomics",
                 "main_actor_value",
                 "subscribable_main_actor_value_accessor",
             ]
@@ -45,49 +43,67 @@ let package = Package(
             name: "map",
             submoduleDependencies: [
                 "main_actor_value",
-                "mapped_main_actor_reaction_hub",
             ]
         ),
         submoduleTarget(
             name: "subscribable_main_actor_value_accessor",
             submoduleDependencies: [
-                "ergonomics",
                 "main_actor_value_source_monitor",
-                "main_actor_reaction_hub",
             ]
-        ),
-        submoduleTarget(
-            name: "ergonomics",
-            submoduleDependencies: ["main_actor_value_accessor"]
         ),
         submoduleTarget(
             name: "main_actor_value",
             submoduleDependencies: [
                 "main_actor_value_source",
                 "main_actor_value_source_monitor",
-                "main_actor_reaction_hub",
             ]
         ),
         submoduleTarget(
-            name: "mapped_main_actor_reaction_hub",
-            submoduleDependencies: ["main_actor_reaction_hub"]
-        ),
-        submoduleTarget(
-            name: "main_actor_reaction_hub",
-            submoduleDependencies: ["main_actor_value_accessor"]
-        ),
-        submoduleTarget(
             name: "main_actor_value_source_monitor",
-            submoduleDependencies: ["main_actor_value_source"]
+            submoduleDependencies: [
+                "main_actor_value_source",
+            ]
         ),
         submoduleTarget(
             name: "main_actor_value_source",
-            submoduleDependencies: ["main_actor_value_accessor"]
+            submoduleDependencies: [
+                "main_actor_value_accessor",
+                "main_actor_reaction_managers",
+            ]
         ),
         submoduleTarget(
             name: "main_actor_value_accessor",
+            submoduleDependencies: ["interface_main_actor_reaction_manager"],
             otherDependencies: ["FoundationToolkit"]
         ),
+        
+        
+        ///
+        submoduleTarget(
+            name: "main_actor_reaction_managers",
+            submoduleDependencies: [
+                "mapped_main_actor_reaction_manager",
+                "main_actor_reaction_manager",
+                "ergonomics_interface_main_actor_reaction_manager",
+                "interface_main_actor_reaction_manager",
+            ]
+        ),
+        submoduleTarget(
+            name: "mapped_main_actor_reaction_manager",
+            submoduleDependencies: ["interface_main_actor_reaction_manager"]
+        ),
+        submoduleTarget(
+            name: "main_actor_reaction_manager",
+            submoduleDependencies: ["interface_main_actor_reaction_manager"]
+        ),
+        submoduleTarget(
+            name: "ergonomics_interface_main_actor_reaction_manager",
+            submoduleDependencies: ["interface_main_actor_reaction_manager"]
+        ),
+        submoduleTarget(
+            name: "interface_main_actor_reaction_manager"
+        ),
+        
         
         ///
         .testTarget(

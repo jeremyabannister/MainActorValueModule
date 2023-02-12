@@ -7,6 +7,7 @@
 
 ///
 @_exported import MainActorValueModule_main_actor_value_accessor
+@_exported import MainActorValueModule_main_actor_reaction_managers
 
 
 ///
@@ -20,11 +21,22 @@ public protocol MainActorValueSource <Value>: MainActorValueAccessor {
     var objectID: ObjectID { get }
     
     ///
-    var willSet: any MainActorReactionManager<Void> { get }
+    var willSet: any Interface_MainActorReactionManager<Void> { get }
     
     ///
-    var didSet: any MainActorReactionManager<Value> { get }
+    var didSet: any Interface_MainActorReactionManager<Value> { get }
     
     ///
-    var didAccess: any MainActorReactionManager<Value> { get }
+    var didAccess: any Interface_MainActorReactionManager<Value> { get }
+}
+
+///
+extension MainActorValueSource {
+    
+    ///
+    public var didSet_Void: any Interface_MainActorReactionManager<Void> {
+        self
+            .didSet
+            .map { _ in () }
+    }
 }

@@ -7,7 +7,6 @@
 
 ///
 @_exported import MainActorValueModule_main_actor_value
-@_exported import MainActorValueModule_mapped_main_actor_reaction_hub
 
 
 ///
@@ -54,9 +53,9 @@ public struct MappedMainActorValue <Value>: MainActorValueAccessor {
     private let _fetchCurrentValue: @MainActor ()->Value
     
     ///
-    public let willSet: any MainActorReactionManager<Void>
-    public let didSet: any MainActorReactionManager<Value>
-    public let didAccess: any MainActorReactionManager<Value>
+    public let willSet: any Interface_MainActorReactionManager<Void>
+    public let didSet: any Interface_MainActorReactionManager<Value>
+    public let didAccess: any Interface_MainActorReactionManager<Value>
     
     ///
     public let rootObjectID: ObjectID
