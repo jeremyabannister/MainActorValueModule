@@ -2,41 +2,131 @@
 //  MainActorValueSource.swift
 //  
 //
-//  Created by Jeremy Bannister on 2/10/23.
+//  Created by Jeremy Bannister on 10/20/22.
 //
 
 ///
-@_exported import MainActorValueModule_interface_readable_main_actor_value
-@_exported import MainActorValueModule_main_actor_reaction_managers
-
-
-///
-public protocol
+public actor
     MainActorValueSource
         <Value>:
-            Interface_ReadableMainActorValue {
+            Interface_SubscribableMainActorValue,
+            ReferenceType {
+    
+    ///
+    public init (initialValue: Value) {
+        self.init(
+            _valueStorage: .value(initialValue)
+        )
+    }
+    
+    ///
+    public init (uninitializedValue: @escaping @MainActor ()->Value) {
+        self.init(
+            _valueStorage: .notYetComputed(uninitializedValue)
+        )
+    }
+    
+    ///
+    private init (_valueStorage: ValueStorage) {
+        self._valueStorage = _valueStorage
+    }
     
     ///
     @MainActor
-    var currentValue: Value { get set }
+    private var _valueStorage: ValueStorage
     
     ///
-    var objectID: ObjectID { get }
+    private enum ValueStorage {
+        case value (Value)
+        case notYetComputed (@MainActor ()->Value)
+    }
     
     ///
-    var willSet: any Interface_MainActorReactionManager<Void> { get }
-    
-    ///
-    var didSet: any Interface_MainActorReactionManager<Value> { get }
+    private let _willSet = MainActorReactionManager<Void>()
+    private let _didSet = MainActorReactionManager<Value>()
 }
 
 ///
 extension MainActorValueSource {
     
     ///
-    public var didSet_Void: any Interface_MainActorReactionManager<Void> {
-        self
-            .didSet
-            .map { _ in () }
+    public nonisolated var willSet: any Interface_MainActorReactionManager<Void> { _willSet }
+    public nonisolated var didSet: any Interface_MainActorReactionManager<Value> { _didSet }
+    
+    ///
+    @MainActor
+    public var currentValue: Value {
+        
+        ///
+        get {
+            
+            ///
+            func reportAccess (of value: Value) {
+                
+                ///
+                MainActorValueSourceMonitor
+                    .shared
+                    .report(accessOf: self)
+            }
+            
+            ///
+            switch _valueStorage {
+                
+            ///
+            case .value (let value):
+                
+                ///
+                reportAccess(of: value)
+                
+                ///
+                return value
+                
+            ///
+            case .notYetComputed (let computeValue):
+                
+                ///
+                let value = computeValue()
+                
+                ///
+                self._valueStorage = .value(value)
+                
+                ///
+                reportAccess(of: value)
+                
+                ///
+                return value
+            }
+        }
+        
+        ///
+        set {
+            
+            ///
+            for reaction in _willSet.orderedReactions {
+                reaction(())
+            }
+            
+            ///
+            _valueStorage = .value(newValue)
+            
+            ///
+            for reaction in _didSet.orderedReactions {
+                reaction(newValue)
+            }
+        }
+    }
+    
+    ///
+    @MainActor
+    public func setValue (to newValue: Value) {
+        self.currentValue = newValue
+    }
+    
+    ///
+    @MainActor
+    public func mutateValue (using mutation: (inout Value)->()) {
+        var copy = currentValue
+        mutation(&copy)
+        self.currentValue = copy
     }
 }

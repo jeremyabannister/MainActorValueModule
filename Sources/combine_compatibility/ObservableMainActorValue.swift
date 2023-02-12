@@ -7,8 +7,7 @@
 
 ///
 @_exported import Combine
-@_exported import MainActorValueModule_main_actor_value
-@_exported import MainActorValueModule_subscribable_main_actor_value
+@_exported import MainActorValueModule_main_actor_value_source
 
 
 // MARK: - ObservableMainActorValue
@@ -32,7 +31,7 @@ extension Interface_ReadableMainActorValue {
 }
 
 ///
-extension MainActorValue {
+extension MainActorValueSource {
     
     ///
     @MainActor
@@ -138,7 +137,7 @@ public actor
     ///
     @MainActor
     fileprivate init
-        (source: MainActorValue<Value>) {
+        (source: MainActorValueSource<Value>) {
         
         ///
         let objectWillChange = PassthroughSubject<Void, Never>()
@@ -161,7 +160,7 @@ public actor
     private let uuid = UUID()
     
     ///
-    private let source: MainActorValue<Value>
+    private let source: MainActorValueSource<Value>
     
     ///
     deinit {

@@ -6,28 +6,24 @@
 //
 
 ///
-@_exported import MainActorValueModule_main_actor_value_source
-
-
-///
-public actor MainActorValueSourceMonitor {
+internal actor MainActorValueSourceMonitor {
     
     ///
-    public static let shared: MainActorValueSourceMonitor = MainActorValueSourceMonitor()
+    static let shared: MainActorValueSourceMonitor = MainActorValueSourceMonitor()
     
     ///
     private init () { }
     
     ///
     @MainActor
-    private var logsOfAccessesToSources: [UUID: [ObjectID: any MainActorValueSource]] = [:]
+    private var logsOfAccessesToSources: [UUID: [ObjectID: any Interface_SubscribableMainActorValue]] = [:]
     
     ///
     @MainActor
-    public func generateValueAndReportAccessedSources
+    func generateValueAndReportAccessedSources
         <Value>
         (using generateValue: @escaping @MainActor ()->Value)
-    -> (value: Value, accessedSources: [ObjectID: any MainActorValueSource]) {
+    -> (value: Value, accessedSources: [ObjectID: any Interface_SubscribableMainActorValue]) {
         
         ///
         let uuid: UUID = .generateRandom()
@@ -50,7 +46,11 @@ public actor MainActorValueSourceMonitor {
     
     ///
     @MainActor
-    public func report (accessOf source: any MainActorValueSource) {
+    func report
+        <Value>
+        (accessOf source: MainActorValueSource<Value>) {
+        
+        ///
         for (key, accessLog) in logsOfAccessesToSources {
             logsOfAccessesToSources[key] =
                 accessLog

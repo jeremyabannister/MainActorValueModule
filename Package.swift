@@ -26,7 +26,7 @@ let package = Package(
             name: "MainActorValueModule",
             submoduleDependencies: [
                 "combine_compatibility",
-                "main_actor_value",
+                "main_actor_value_source",
                 "map",
             ]
         ),
@@ -35,32 +35,11 @@ let package = Package(
         submoduleTarget(
             name: "combine_compatibility",
             submoduleDependencies: [
-                "main_actor_value",
-                "subscribable_main_actor_value",
+                "main_actor_value_source",
             ]
         ),
         submoduleTarget(
             name: "map",
-            submoduleDependencies: [
-                "main_actor_value",
-            ]
-        ),
-        submoduleTarget(
-            name: "subscribable_main_actor_value",
-            submoduleDependencies: [
-                "main_actor_value_source_monitor",
-            ]
-        ),
-        submoduleTarget(
-            name: "main_actor_value",
-            submoduleDependencies: [
-                "interface_subscribable_main_actor_value",
-                "main_actor_value_source",
-                "main_actor_value_source_monitor",
-            ]
-        ),
-        submoduleTarget(
-            name: "main_actor_value_source_monitor",
             submoduleDependencies: [
                 "main_actor_value_source",
             ]
@@ -68,7 +47,7 @@ let package = Package(
         submoduleTarget(
             name: "main_actor_value_source",
             submoduleDependencies: [
-                "interface_readable_main_actor_value",
+                "interface_subscribable_main_actor_value",
                 "main_actor_reaction_managers",
             ]
         ),

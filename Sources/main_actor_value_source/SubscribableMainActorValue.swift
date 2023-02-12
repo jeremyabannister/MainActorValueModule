@@ -6,10 +6,6 @@
 //
 
 ///
-@_exported import MainActorValueModule_main_actor_value_source_monitor
-
-
-///
 extension Interface_ReadableMainActorValue {
     
     ///
@@ -66,7 +62,7 @@ public actor
     ///
     @MainActor
     func updateWillSetAndDidSet
-        (for newAccessedSources: [ObjectID: any MainActorValueSource]) {
+        (for newAccessedSources: [ObjectID: any Interface_SubscribableMainActorValue]) {
         
         ///
         let staleSourceIDs: Set<ObjectID> =
@@ -135,7 +131,7 @@ public actor
     
     ///
     @MainActor
-    private var latestAccessedSources: [ObjectID: any MainActorValueSource] = [:]
+    private var latestAccessedSources: [ObjectID: any Interface_SubscribableMainActorValue] = [:]
     
     ///
     private let _willSet = MainActorReactionManager<Void>()
@@ -149,5 +145,16 @@ public actor
     ///
     public nonisolated var didSet: any Interface_MainActorReactionManager<Value> {
         _didSet
+    }
+}
+
+///
+fileprivate extension Interface_SubscribableMainActorValue {
+    
+    ///
+    var didSet_Void: any Interface_MainActorReactionManager<Void> {
+        self
+            .didSet
+            .map { _ in () }
     }
 }

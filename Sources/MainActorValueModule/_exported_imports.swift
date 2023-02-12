@@ -7,5 +7,5 @@
 
 ///
 @_exported import MainActorValueModule_combine_compatibility
-@_exported import MainActorValueModule_main_actor_value
+@_exported import MainActorValueModule_main_actor_value_source
 @_exported import MainActorValueModule_map
