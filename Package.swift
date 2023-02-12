@@ -26,6 +26,7 @@ let package = Package(
             name: "MainActorValueModule",
             submoduleDependencies: [
                 "combine_compatibility",
+                "main_actor_value",
                 "main_actor_value_source",
                 "map",
             ]
@@ -42,6 +43,12 @@ let package = Package(
             name: "map",
             submoduleDependencies: [
                 "main_actor_value_source",
+            ]
+        ),
+        submoduleTarget(
+            name: "main_actor_value",
+            submoduleDependencies: [
+                "interface_readable_main_actor_value",
             ]
         ),
         submoduleTarget(
