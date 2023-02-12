@@ -6,12 +6,15 @@
 //
 
 ///
-@_exported import MainActorValueModule_main_actor_value_accessor
+@_exported import MainActorValueModule_interface_readable_main_actor_value
 @_exported import MainActorValueModule_main_actor_reaction_managers
 
 
 ///
-public protocol MainActorValueSource <Value>: MainActorValueAccessor {
+public protocol
+    MainActorValueSource
+        <Value>:
+            Interface_ReadableMainActorValue {
     
     ///
     @MainActor

@@ -1,16 +1,17 @@
 //
-//  MainActorValueAccessor.swift
+//  Interface_ReadableMainActorValue.swift
 //  
 //
-//  Created by Jeremy Bannister on 10/20/22.
+//  Created by Jeremy Bannister on 2/12/23.
 //
 
 ///
 @_exported import FoundationToolkit
 @_exported import MainActorValueModule_interface_main_actor_reaction_manager
 
+
 ///
-public protocol MainActorValueAccessor <Value> {
+public protocol Interface_ReadableMainActorValue <Value> {
     
     ///
     @MainActor

@@ -1,5 +1,5 @@
 //
-//  SubscribableMainActorValueAccessor.swift
+//  SubscribableMainActorValue.swift
 //  
 //
 //  Created by Jeremy Bannister on 2/10/23.
@@ -10,24 +10,25 @@
 
 
 ///
-extension MainActorValueAccessor {
+extension Interface_ReadableMainActorValue {
     
     ///
-    public func madeSubscribable () -> SubscribableMainActorValueAccessor<Value> {
-        SubscribableMainActorValueAccessor(
-            mainActorValueAccessor: self
+    public func madeSubscribable () -> SubscribableMainActorValue<Value> {
+        SubscribableMainActorValue(
+            readableValue: self
         )
     }
 }
 
 ///
-public actor SubscribableMainActorValueAccessor
-    <Value>:
-        MainActorValueAccessor {
+public actor
+    SubscribableMainActorValue
+        <Value>:
+            Interface_ReadableMainActorValue {
     
     ///
-    public init (mainActorValueAccessor: any MainActorValueAccessor<Value>) {
-        self.init({ mainActorValueAccessor.currentValue })
+    public init (readableValue: any Interface_ReadableMainActorValue<Value>) {
+        self.init({ readableValue.currentValue })
     }
     
     ///
@@ -141,11 +142,6 @@ public actor SubscribableMainActorValueAccessor
     private let _didSet = MainActorReactionManager<Value>()
     
     ///
-    public nonisolated var didAccess: any Interface_MainActorReactionManager<Value> {
-        fatalError()
-    }
-    
-    ///
     public nonisolated var willSet: any Interface_MainActorReactionManager<Void> {
         _willSet
     }
@@ -153,10 +149,5 @@ public actor SubscribableMainActorValueAccessor
     ///
     public nonisolated var didSet: any Interface_MainActorReactionManager<Value> {
         _didSet
-    }
-    
-    ///
-    public nonisolated var rootObjectID: ObjectID {
-        fatalError()
     }
 }

@@ -8,31 +8,13 @@
 ///
 @_exported import Combine
 @_exported import MainActorValueModule_main_actor_value
-@_exported import MainActorValueModule_subscribable_main_actor_value_accessor
+@_exported import MainActorValueModule_subscribable_main_actor_value
 
 
 // MARK: - ObservableMainActorValue
 
 ///
-extension MainActorValueAccessor {
-    
-    ///
-    @MainActor
-    public func asObservableMainActorValueAccessor () -> ObservableMainActorValueAccessor<Value> {
-        
-        ///
-        let newObservableMainActorValueAccessor =
-            ObservableMainActorValueAccessor(
-                mainActorValue: self
-            )
-        
-        ///
-        return newObservableMainActorValueAccessor
-    }
-}
-
-///
-extension MainActorValue {
+extension Interface_ReadableMainActorValue {
     
     ///
     @MainActor
@@ -41,7 +23,7 @@ extension MainActorValue {
         ///
         let newObservableMainActorValue =
             ObservableMainActorValue(
-                mainActorValue: self
+                readableValue: self
             )
         
         ///
@@ -50,10 +32,30 @@ extension MainActorValue {
 }
 
 ///
-public actor ObservableMainActorValueAccessor <Value>:
-    MainActorValueAccessor,
-    ObservableObject,
-    ReferenceType {
+extension MainActorValue {
+    
+    ///
+    @MainActor
+    public func asObservableMainActorValueSource () -> ObservableMainActorValueSource<Value> {
+        
+        ///
+        let newObservableMainActorValueSource =
+            ObservableMainActorValueSource(
+                source: self
+            )
+        
+        ///
+        return newObservableMainActorValueSource
+    }
+}
+
+///
+public actor
+    ObservableMainActorValue
+        <Value>:
+            Interface_ReadableMainActorValue,
+            ObservableObject,
+            ReferenceType {
     
     ///
     private let uuid = UUID()
@@ -61,7 +63,7 @@ public actor ObservableMainActorValueAccessor <Value>:
     ///
     @MainActor
     fileprivate init
-        (mainActorValue: some MainActorValueAccessor<Value>) {
+        (readableValue: some Interface_ReadableMainActorValue<Value>) {
         
         ///
         let objectWillChange = PassthroughSubject<Void, Never>()
@@ -70,7 +72,7 @@ public actor ObservableMainActorValueAccessor <Value>:
         self.objectWillChange = objectWillChange.eraseToAnyPublisher()
         
         ///
-        let subscribableValue = mainActorValue.madeSubscribable()
+        let subscribableValue = readableValue.madeSubscribable()
         
         ///
         self.subscribableValue = subscribableValue
@@ -84,7 +86,7 @@ public actor ObservableMainActorValueAccessor <Value>:
     }
     
     ///
-    private let subscribableValue: SubscribableMainActorValueAccessor<Value>
+    private let subscribableValue: SubscribableMainActorValue<Value>
     
     ///
     deinit {
@@ -126,15 +128,17 @@ public actor ObservableMainActorValueAccessor <Value>:
 }
 
 ///
-public actor ObservableMainActorValue <Value>:
-    MainActorValueAccessor,
-    ObservableObject,
-    ReferenceType {
+public actor
+    ObservableMainActorValueSource
+        <Value>:
+            Interface_ReadableMainActorValue,
+            ObservableObject,
+            ReferenceType {
     
     ///
     @MainActor
     fileprivate init
-        (mainActorValue: MainActorValue<Value>) {
+        (source: MainActorValue<Value>) {
         
         ///
         let objectWillChange = PassthroughSubject<Void, Never>()
@@ -143,10 +147,10 @@ public actor ObservableMainActorValue <Value>:
         self.objectWillChange = objectWillChange.eraseToAnyPublisher()
         
         ///
-        self.mainActorValue = mainActorValue
+        self.source = source
         
         ///
-        mainActorValue
+        source
             .willSet
             .registerReaction(key: self.uuid.uuidString) { [objectWillChange] _ in
                 objectWillChange.send()
@@ -157,12 +161,12 @@ public actor ObservableMainActorValue <Value>:
     private let uuid = UUID()
     
     ///
-    private let mainActorValue: MainActorValue<Value>
+    private let source: MainActorValue<Value>
     
     ///
     deinit {
-        Task { @MainActor [mainActorValue, uuid] in
-            mainActorValue
+        Task { @MainActor [source, uuid] in
+            source
                 .willSet
                 .unregisterReaction(forKey: uuid.uuidString)
         }
@@ -173,18 +177,18 @@ public actor ObservableMainActorValue <Value>:
     
     ///
     public nonisolated var willSet: any Interface_MainActorReactionManager<Void> {
-        mainActorValue.willSet
+        source.willSet
     }
     
     ///
     public nonisolated var didSet: any Interface_MainActorReactionManager<Value> {
-        mainActorValue.didSet
+        source.didSet
     }
     
     ///
     @MainActor
     public var currentValue: Value {
-        get { mainActorValue.currentValue }
-        set { mainActorValue.currentValue = newValue }
+        get { source.currentValue }
+        set { source.currentValue = newValue }
     }
 }

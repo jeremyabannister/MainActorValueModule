@@ -36,7 +36,7 @@ let package = Package(
             name: "combine_compatibility",
             submoduleDependencies: [
                 "main_actor_value",
-                "subscribable_main_actor_value_accessor",
+                "subscribable_main_actor_value",
             ]
         ),
         submoduleTarget(
@@ -46,7 +46,7 @@ let package = Package(
             ]
         ),
         submoduleTarget(
-            name: "subscribable_main_actor_value_accessor",
+            name: "subscribable_main_actor_value",
             submoduleDependencies: [
                 "main_actor_value_source_monitor",
             ]
@@ -68,18 +68,18 @@ let package = Package(
         submoduleTarget(
             name: "main_actor_value_source",
             submoduleDependencies: [
-                "main_actor_value_accessor",
+                "interface_readable_main_actor_value",
                 "main_actor_reaction_managers",
             ]
         ),
         submoduleTarget(
             name: "interface_subscribable_main_actor_value",
             submoduleDependencies: [
-                "main_actor_value_accessor",
+                "interface_readable_main_actor_value",
             ]
         ),
         submoduleTarget(
-            name: "main_actor_value_accessor",
+            name: "interface_readable_main_actor_value",
             submoduleDependencies: ["interface_main_actor_reaction_manager"],
             otherDependencies: ["FoundationToolkit"]
         ),

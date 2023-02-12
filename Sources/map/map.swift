@@ -10,7 +10,7 @@
 
 
 ///
-extension MainActorValueAccessor {
+extension Interface_ReadableMainActorValue {
     
     ///
     public func map
@@ -27,11 +27,14 @@ extension MainActorValueAccessor {
 }
 
 ///
-public struct MappedMainActorValue <Value>: MainActorValueAccessor {
+public struct
+    MappedMainActorValue
+        <Value>:
+            Interface_ReadableMainActorValue {
     
     ///
     fileprivate init
-        <Base: MainActorValueAccessor>
+        <Base: Interface_ReadableMainActorValue>
         (base: Base,
          transform: @escaping @MainActor (Base.Value)->Value) {
         

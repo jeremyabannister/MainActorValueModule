@@ -6,14 +6,14 @@
 //
 
 ///
-@_exported import MainActorValueModule_main_actor_value_accessor
+@_exported import MainActorValueModule_interface_readable_main_actor_value
 
 
 ///
 public protocol
     Interface_SubscribableMainActorValue
         <Value>:
-            MainActorValueAccessor {
+            Interface_ReadableMainActorValue {
     
     ///
     var willSet: any Interface_MainActorReactionManager<Void> { get }
