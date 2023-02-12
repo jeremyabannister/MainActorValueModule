@@ -10,6 +10,7 @@ public actor
     MainActorValueSource
         <Value>:
             Interface_SubscribableMainActorValue,
+            Interface_MainActorValueSource,
             ReferenceType {
     
     ///

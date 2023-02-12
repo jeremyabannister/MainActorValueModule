@@ -16,14 +16,14 @@ internal actor MainActorValueSourceMonitor {
     
     ///
     @MainActor
-    private var logsOfAccessesToSources: [UUID: [ObjectID: any Interface_SubscribableMainActorValue]] = [:]
+    private var logsOfAccessesToSources: [UUID: [ObjectID: any Interface_MainActorValueSource]] = [:]
     
     ///
     @MainActor
     func generateValueAndReportAccessedSources
         <Value>
         (using generateValue: @escaping @MainActor ()->Value)
-    -> (value: Value, accessedSources: [ObjectID: any Interface_SubscribableMainActorValue]) {
+    -> (value: Value, accessedSources: [ObjectID: any Interface_MainActorValueSource]) {
         
         ///
         let uuid: UUID = .generateRandom()
