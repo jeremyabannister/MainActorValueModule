@@ -6,7 +6,7 @@
 //
 
 ///
-@_exported import MainActorValueModule_reaction_hub
+@_exported import MainActorValueModule_main_actor_reaction_hub
 
 
 ///

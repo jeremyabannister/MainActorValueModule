@@ -8,7 +8,7 @@
 ///
 @_exported import MainActorValueModule_main_actor_value_source
 @_exported import MainActorValueModule_main_actor_value_source_monitor
-@_exported import MainActorValueModule_reaction_hub
+@_exported import MainActorValueModule_main_actor_reaction_hub
 
 
 ///
@@ -46,9 +46,9 @@ public actor MainActorValue <Value>:
     }
     
     ///
-    private let _willSet = ReactionHub<Void>()
-    private let _didSet = ReactionHub<Value>()
-    private let _didAccess = ReactionHub<Value>()
+    private let _willSet = MainActorReactionHub<Void>()
+    private let _didSet = MainActorReactionHub<Value>()
+    private let _didAccess = MainActorReactionHub<Value>()
 }
 
 ///

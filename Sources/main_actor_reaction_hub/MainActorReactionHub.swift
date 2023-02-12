@@ -1,5 +1,5 @@
 //
-//  ReactionHub.swift
+//  MainActorReactionHub.swift
 //  
 //
 //  Created by Jeremy Bannister on 2/10/23.
@@ -9,7 +9,7 @@
 @_exported import MainActorValueModule_main_actor_value_accessor
 
 ///
-public actor ReactionHub <Event>: MainActorReactionManager {
+public actor MainActorReactionHub <Event>: MainActorReactionManager {
     
     ///
     public init () { }
