@@ -7,6 +7,7 @@
 
 ///
 @_exported import MainActorValueModule_interface_readable_main_actor_value
+@_exported import MainActorValueModule_interface_main_actor_reaction_manager
 
 
 ///

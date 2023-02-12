@@ -75,12 +75,12 @@ let package = Package(
         submoduleTarget(
             name: "interface_subscribable_main_actor_value",
             submoduleDependencies: [
+                "interface_main_actor_reaction_manager",
                 "interface_readable_main_actor_value",
             ]
         ),
         submoduleTarget(
             name: "interface_readable_main_actor_value",
-            submoduleDependencies: ["interface_main_actor_reaction_manager"],
             otherDependencies: ["FoundationToolkit"]
         ),
         
