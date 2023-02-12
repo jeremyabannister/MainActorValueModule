@@ -134,7 +134,7 @@ public actor SubscribableMainActorValueAccessor
     
     ///
     @MainActor
-    private var latestAccessedSources: [ObjectID: any MainActorValueAccessor] = [:]
+    private var latestAccessedSources: [ObjectID: any MainActorValueSource] = [:]
     
     ///
     private let _willSet = MainActorReactionManager<Void>()

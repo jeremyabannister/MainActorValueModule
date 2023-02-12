@@ -37,10 +37,6 @@ public struct MappedMainActorValue <Value>: MainActorValueAccessor {
         
         ///
         self._fetchCurrentValue = { transform(base.currentValue) }
-        self.willSet = base.willSet
-        self.didSet = base.didSet.map(transform)
-        self.didAccess = base.didAccess.map(transform)
-        self.rootObjectID = base.rootObjectID
     }
     
     ///
@@ -51,12 +47,4 @@ public struct MappedMainActorValue <Value>: MainActorValueAccessor {
     
     ///
     private let _fetchCurrentValue: @MainActor ()->Value
-    
-    ///
-    public let willSet: any Interface_MainActorReactionManager<Void>
-    public let didSet: any Interface_MainActorReactionManager<Value>
-    public let didAccess: any Interface_MainActorReactionManager<Value>
-    
-    ///
-    public let rootObjectID: ObjectID
 }
