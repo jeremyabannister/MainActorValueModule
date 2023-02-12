@@ -42,7 +42,7 @@ let package = Package(
         submoduleTarget(
             name: "map",
             submoduleDependencies: [
-                "main_actor_value_source",
+                "main_actor_value",
             ]
         ),
         submoduleTarget(
