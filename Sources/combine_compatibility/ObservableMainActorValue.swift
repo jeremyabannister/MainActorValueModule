@@ -172,11 +172,6 @@ public actor ObservableMainActorValue <Value>:
     public nonisolated let objectWillChange: AnyPublisher<Void, Never>
     
     ///
-    public nonisolated var rootObjectID: ObjectID {
-        mainActorValue.rootObjectID
-    }
-    
-    ///
     public nonisolated var willSet: any Interface_MainActorReactionManager<Void> {
         mainActorValue.willSet
     }
@@ -184,11 +179,6 @@ public actor ObservableMainActorValue <Value>:
     ///
     public nonisolated var didSet: any Interface_MainActorReactionManager<Value> {
         mainActorValue.didSet
-    }
-    
-    ///
-    public nonisolated var didAccess: any Interface_MainActorReactionManager<Value> {
-        mainActorValue.didAccess
     }
     
     ///

@@ -54,6 +54,7 @@ let package = Package(
         submoduleTarget(
             name: "main_actor_value",
             submoduleDependencies: [
+                "interface_subscribable_main_actor_value",
                 "main_actor_value_source",
                 "main_actor_value_source_monitor",
             ]
@@ -69,6 +70,12 @@ let package = Package(
             submoduleDependencies: [
                 "main_actor_value_accessor",
                 "main_actor_reaction_managers",
+            ]
+        ),
+        submoduleTarget(
+            name: "interface_subscribable_main_actor_value",
+            submoduleDependencies: [
+                "main_actor_value_accessor",
             ]
         ),
         submoduleTarget(

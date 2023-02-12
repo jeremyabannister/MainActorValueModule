@@ -25,9 +25,6 @@ public protocol MainActorValueSource <Value>: MainActorValueAccessor {
     
     ///
     var didSet: any Interface_MainActorReactionManager<Value> { get }
-    
-    ///
-    var didAccess: any Interface_MainActorReactionManager<Value> { get }
 }
 
 ///

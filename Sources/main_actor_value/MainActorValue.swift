@@ -6,12 +6,14 @@
 //
 
 ///
+@_exported import MainActorValueModule_interface_subscribable_main_actor_value
 @_exported import MainActorValueModule_main_actor_value_source
 @_exported import MainActorValueModule_main_actor_value_source_monitor
 
 
 ///
 public actor MainActorValue <Value>:
+    Interface_SubscribableMainActorValue,
     MainActorValueSource,
     ReferenceType {
     
@@ -47,23 +49,14 @@ public actor MainActorValue <Value>:
     ///
     private let _willSet = MainActorReactionManager<Void>()
     private let _didSet = MainActorReactionManager<Value>()
-    private let _didAccess = MainActorReactionManager<Value>()
 }
 
 ///
 extension MainActorValue {
     
     ///
-    public nonisolated var rootObjectID: ObjectID {
-        
-        /// `MainActorValue` is an actual reference type (an "object") and therefore it is its own "rootObject", and therefore it returns its own objectID as the "rootObjectID".
-        return self.objectID
-    }
-    
-    ///
     public nonisolated var willSet: any Interface_MainActorReactionManager<Void> { _willSet }
     public nonisolated var didSet: any Interface_MainActorReactionManager<Value> { _didSet }
-    public nonisolated var didAccess: any Interface_MainActorReactionManager<Value> { _didAccess }
     
     ///
     @MainActor
@@ -79,11 +72,6 @@ extension MainActorValue {
                 MainActorValueSourceMonitor
                     .shared
                     .report(accessOf: self)
-                
-                ///
-                for reaction in self._didAccess.orderedReactions {
-                    reaction(value)
-                }
             }
             
             ///
