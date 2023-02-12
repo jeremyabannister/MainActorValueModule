@@ -1,5 +1,5 @@
 //
-//  MappedReactionHub.swift
+//  MappedMainActorReactionHub.swift
 //  
 //
 //  Created by Jeremy Bannister on 2/11/23.
@@ -16,7 +16,7 @@ extension MainActorReactionManager {
     public func map
         <NewEvent>
         (_ transform: @escaping @MainActor (Event)->NewEvent)
-    -> MappedReactionHub<Event, NewEvent> {
+    -> MappedMainActorReactionHub<Event, NewEvent> {
         
         ///
         .init(
@@ -28,7 +28,7 @@ extension MainActorReactionManager {
 
 
 ///
-public struct MappedReactionHub <UpstreamEvent, Event>: MainActorReactionManager {
+public struct MappedMainActorReactionHub <UpstreamEvent, Event>: MainActorReactionManager {
     
     ///
     fileprivate init
