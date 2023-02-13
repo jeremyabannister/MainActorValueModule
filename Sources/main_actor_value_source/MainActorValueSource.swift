@@ -62,13 +62,7 @@ extension MainActorValueSource {
         get {
             
             ///
-            func reportAccess (of value: Value) {
-                
-                ///
-                MainActorValueSourceMonitor
-                    .shared
-                    .report(accessOf: self)
-            }
+            let valueToReturn: Value
             
             ///
             switch _valueStorage {
@@ -77,10 +71,7 @@ extension MainActorValueSource {
             case .value (let value):
                 
                 ///
-                reportAccess(of: value)
-                
-                ///
-                return value
+                valueToReturn = value
                 
             ///
             case .notYetComputed (let computeValue):
@@ -92,11 +83,16 @@ extension MainActorValueSource {
                 self._valueStorage = .value(value)
                 
                 ///
-                reportAccess(of: value)
-                
-                ///
-                return value
+                valueToReturn = value
             }
+            
+            ///
+            MainActorValueSourceMonitor
+                .shared
+                .report(accessOf: self)
+            
+            ///
+            return valueToReturn
         }
         
         ///
