@@ -9,6 +9,7 @@
 extension Interface_ReadableMainActorValue {
     
     ///
+    @MainActor
     public func madeSubscribable () -> SubscribableMainActorValue<Value> {
         SubscribableMainActorValue(
             readableValue: self
@@ -23,13 +24,20 @@ public actor
             Interface_SubscribableMainActorValue {
     
     ///
+    @MainActor
     public init (readableValue: any Interface_ReadableMainActorValue<Value>) {
         self.init({ readableValue.currentValue })
     }
     
     ///
+    @MainActor
     public init (_ generateValue: @escaping @MainActor ()->Value) {
+        
+        ///
         self.generateValue = generateValue
+        
+        ///
+        updateSubscriptionByGeneratingValue()
     }
     
     ///
@@ -41,6 +49,15 @@ public actor
     ///
     @MainActor
     public var currentValue: Value {
+        
+        ///
+        return updateSubscriptionByGeneratingValue()
+    }
+    
+    ///
+    @MainActor
+    @discardableResult
+    private func updateSubscriptionByGeneratingValue () -> Value {
         
         ///
         let (value, accessedSources) =

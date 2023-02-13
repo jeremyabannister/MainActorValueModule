@@ -19,7 +19,7 @@ let package = Package(
             from: "0.4.4"
         ),
     ],
-    targets: [
+    targets: expand([
         
         ///
         umbrellaTarget(
@@ -51,7 +51,7 @@ let package = Package(
                 "interface_readable_main_actor_value",
             ]
         ),
-        submoduleTarget(
+        testedSubmoduleTarget(
             name: "main_actor_value_source",
             submoduleDependencies: [
                 "interface_subscribable_main_actor_value",
@@ -96,14 +96,7 @@ let package = Package(
         submoduleTarget(
             name: "interface_main_actor_reaction_manager"
         ),
-        
-        
-        ///
-        .testTarget(
-            name: "MainActorValueModule-tests",
-            dependencies: ["MainActorValueModule"]
-        ),
-    ]
+    ])
 )
 
 ///
@@ -114,24 +107,67 @@ func umbrellaTarget
 -> Target {
     .target(
         name: name,
-        dependencies:
-            submoduleDependencies
-                .map { .init(stringLiteral: submoduleName($0)) }
-            + otherDependencies
+        dependencies: submoduleDependencies.map { .init(stringLiteral: submoduleName($0)) } + otherDependencies
     )
+}
+func testedSubmoduleTarget
+    (name: String,
+     submoduleDependencies: [String] = [],
+     otherDependencies: [Target.Dependency] = [],
+     nonstandardLocation: String? = nil)
+-> [Target] {
+    [
+        submoduleTarget(
+            name: name,
+            submoduleDependencies: submoduleDependencies,
+            otherDependencies: otherDependencies,
+            nonstandardLocation: nonstandardLocation
+        ),
+        Target.testTarget(
+            name: submoduleName(name) + "_tests",
+            dependencies: [
+                .init(stringLiteral: submoduleName(name)),
+                .product(name: "FoundationTestToolkit", package: "FoundationToolkit")
+            ],
+            path: "Tests/\(nonstandardLocation ?? name)"
+        )
+    ]
 }
 func submoduleTarget
     (name: String,
      submoduleDependencies: [String] = [],
-     otherDependencies: [Target.Dependency] = [])
+     otherDependencies: [Target.Dependency] = [],
+     nonstandardLocation: String? = nil)
 -> Target {
     .target(
         name: submoduleName(name),
-        dependencies:
-            submoduleDependencies
-                .map { .init(stringLiteral: submoduleName($0)) }
-            + otherDependencies,
-        path: "Sources/\(name)"
+        dependencies: submoduleDependencies.map { .init(stringLiteral: submoduleName($0)) } + otherDependencies,
+        path: "Sources/\(nonstandardLocation ?? name)"
     )
 }
 func submoduleName (_ name: String) -> String { "MainActorValueModule_\(name)" }
+
+
+
+///
+func expand (_ targetProviders: [any TargetProvider]) -> [Target] {
+    targetProviders.flatMap { $0.targets() }
+}
+
+///
+extension Target: TargetProvider {
+    func targets () -> [Target] {
+        [self]
+    }
+}
+
+extension [Target]: TargetProvider {
+    func targets () -> [Target] {
+        self
+    }
+}
+
+///
+protocol TargetProvider {
+    func targets () -> [Target]
+}
