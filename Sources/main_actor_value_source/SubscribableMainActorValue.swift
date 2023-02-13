@@ -20,7 +20,7 @@ extension Interface_ReadableMainActorValue {
 public actor
     SubscribableMainActorValue
         <Value>:
-            Interface_ReadableMainActorValue {
+            Interface_SubscribableMainActorValue {
     
     ///
     public init (readableValue: any Interface_ReadableMainActorValue<Value>) {
