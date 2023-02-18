@@ -52,7 +52,7 @@ extension MainActorValueSource {
 public actor
     ObservableMainActorValue
         <Value>:
-            Interface_ReadableMainActorValue,
+            Interface_SubscribableMainActorValue,
             ObservableObject,
             ReferenceType {
     
