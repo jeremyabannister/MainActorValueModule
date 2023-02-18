@@ -130,7 +130,7 @@ public actor
 public actor
     ObservableMainActorValueSource
         <Value>:
-            Interface_ReadableMainActorValue,
+            Interface_SubscribableMainActorValue,
             ObservableObject,
             ReferenceType {
     
