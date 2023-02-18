@@ -33,7 +33,7 @@ let package = Package(
         ),
         
         ///
-        submoduleTarget(
+        testedSubmoduleTarget(
             name: "combine_compatibility",
             submoduleDependencies: [
                 "main_actor_value_source",
