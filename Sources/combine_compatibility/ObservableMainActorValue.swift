@@ -115,11 +115,6 @@ public actor
     }
     
     ///
-    public nonisolated var didAccess: any Interface_MainActorReactionManager<Value> {
-        fatalError()
-    }
-    
-    ///
     @MainActor
     public var currentValue: Value {
         subscribableValue.currentValue
@@ -133,6 +128,9 @@ public actor
             Interface_SubscribableMainActorValue,
             ObservableObject,
             ReferenceType {
+    
+    ///
+    private let uuid = UUID()
     
     ///
     @MainActor
@@ -155,9 +153,6 @@ public actor
                 objectWillChange.send()
             }
     }
-    
-    ///
-    private let uuid = UUID()
     
     ///
     private let source: MainActorValueSource<Value>
