@@ -14,6 +14,27 @@ public actor
             ReferenceType {
     
     ///
+    @MainActor
+    public init
+        (initialValue: Value,
+         withDeepChangeMonitoring: Void)
+    where Value: Interface_MainActorValueSourceAccessor {
+        
+        ///
+        self.init(
+            initialValue: initialValue
+        )
+        
+        ///
+        setupChangeNotificationForwarding(
+            sourceObjectID: self.objectID,
+            generateValue: { [weak self] in self?.currentValue },
+            _willSet: self._willSet,
+            _didSet: self._didSet
+        )
+    }
+    
+    ///
     public init (initialValue: Value) {
         self.init(
             _valueStorage: .value(initialValue)

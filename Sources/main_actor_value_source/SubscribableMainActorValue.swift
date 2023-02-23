@@ -37,7 +37,20 @@ public actor
         self.generateValue = generateValue
         
         ///
-        updateSubscriptionByGeneratingValue()
+        let _willSet = MainActorReactionManager<Void>()
+        let _didSet = MainActorReactionManager<Value>()
+        
+        ///
+        self._willSet = _willSet
+        self._didSet = _didSet
+        
+        ///
+        setupChangeNotificationForwarding(
+            sourceObjectID: nil,
+            generateValue: generateValue,
+            _willSet: _willSet,
+            _didSet: _didSet
+        )
     }
     
     ///
@@ -51,108 +64,12 @@ public actor
     public var currentValue: Value {
         
         ///
-        return updateSubscriptionByGeneratingValue()
+        return generateValue()
     }
     
     ///
-    @MainActor
-    @discardableResult
-    private func updateSubscriptionByGeneratingValue () -> Value {
-        
-        ///
-        let (value, accessedSources) =
-            MainActorValueSourceMonitor
-                .shared
-                .generateValueAndReportAccessedSources(
-                    using: generateValue
-                )
-        
-        ///
-        updateWillSetAndDidSet(
-            for: accessedSources
-        )
-        
-        ///
-        return value
-    }
-    
-    ///
-    @MainActor
-    func updateWillSetAndDidSet
-        (for newAccessedSources: [ObjectID: any Interface_SubscribableMainActorValue]) {
-        
-        ///
-        let staleSourceIDs: Set<ObjectID> =
-            latestAccessedSources
-                .keys
-                .asSet()
-                .subtracting(newAccessedSources.keys)
-        
-        ///
-        let newSourceIDs: Set<ObjectID> =
-            newAccessedSources
-                .keys
-                .asSet()
-                .subtracting(latestAccessedSources.keys)
-        
-        ///
-        for staleSourceID in staleSourceIDs {
-            
-            ///
-            latestAccessedSources[staleSourceID]?
-                .willSet
-                .unregisterReaction(forKey: self.id.uuidString)
-            
-            ///
-            latestAccessedSources[staleSourceID]?
-                .didSet
-                .unregisterReaction(forKey: self.id.uuidString)
-        }
-        
-        ///
-        for newSourceID in newSourceIDs {
-            
-            ///
-            guard let newSource = newAccessedSources[newSourceID] else { continue }
-            
-            ///
-            newSource
-                .willSet
-                .registerReaction(key: self.id.uuidString) { [_willSet] _ in
-                    for reaction in _willSet.orderedReactions {
-                        reaction(())
-                    }
-                }
-            
-            ///
-            newSource
-                .didSet_Void
-                .registerReaction(key: self.id.uuidString) { [weak self] _ in
-                    
-                    ///
-                    guard let self else { return }
-                    
-                    ///
-                    let newValue = self.currentValue
-                    
-                    ///
-                    for reaction in self._didSet.orderedReactions {
-                        reaction(newValue)
-                    }
-                }
-        }
-        
-        ///
-        self.latestAccessedSources = newAccessedSources
-    }
-    
-    ///
-    @MainActor
-    private var latestAccessedSources: [ObjectID: any Interface_SubscribableMainActorValue] = [:]
-    
-    ///
-    private let _willSet = MainActorReactionManager<Void>()
-    private let _didSet = MainActorReactionManager<Value>()
+    private let _willSet: MainActorReactionManager<Void>
+    private let _didSet: MainActorReactionManager<Value>
     
     ///
     public nonisolated var willSet: any Interface_MainActorReactionManager<Void> {
@@ -162,16 +79,5 @@ public actor
     ///
     public nonisolated var didSet: any Interface_MainActorReactionManager<Value> {
         _didSet
-    }
-}
-
-///
-fileprivate extension Interface_SubscribableMainActorValue {
-    
-    ///
-    var didSet_Void: any Interface_MainActorReactionManager<Void> {
-        self
-            .didSet
-            .map { _ in () }
     }
 }
