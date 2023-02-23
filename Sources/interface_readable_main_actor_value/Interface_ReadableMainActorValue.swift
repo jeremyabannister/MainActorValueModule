@@ -6,11 +6,14 @@
 //
 
 ///
-@_exported import FoundationToolkit
+@_exported import MainActorValueModule_interface_main_actor_value_source_accessor
 
 
 ///
-public protocol Interface_ReadableMainActorValue <Value> {
+public protocol
+    Interface_ReadableMainActorValue
+        <Value>:
+            Interface_MainActorValueSourceAccessor {
     
     ///
     @MainActor
@@ -18,4 +21,14 @@ public protocol Interface_ReadableMainActorValue <Value> {
     
     ///
     associatedtype Value
+}
+
+///
+extension Interface_ReadableMainActorValue {
+    
+    ///
+    @MainActor
+    public func accessCurrentSources () {
+        _ = self.currentValue
+    }
 }
