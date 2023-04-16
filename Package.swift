@@ -132,7 +132,7 @@ func testedSubmoduleTarget
         Target.testTarget(
             name: submoduleName(name) + "_tests",
             dependencies: [
-                .init(stringLiteral: submoduleName(name)),
+                Target.Dependency(stringLiteral: submoduleName(name)),
                 .product(name: "FoundationTestToolkit", package: "FoundationToolkit")
             ],
             path: "Tests/\(nonstandardLocation ?? name)"
