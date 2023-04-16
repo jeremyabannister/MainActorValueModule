@@ -30,7 +30,7 @@ public actor MainActorReactionManager <Event>: Interface_MainActorReactionManage
     }
     
     ///
-    public nonisolated func registerReaction_weakClosure
+    public nonisolated func _registerReaction_weakClosure
         (key: String,
          _ reaction: @escaping @MainActor (Event)->())
     -> @MainActor ()->() {
@@ -57,7 +57,7 @@ public actor MainActorReactionManager <Event>: Interface_MainActorReactionManage
     }
     
     ///
-    public nonisolated func unregisterReaction_weakClosure
+    public nonisolated func _unregisterReaction_weakClosure
         (forKey key: String)
     -> @MainActor () -> () {
         

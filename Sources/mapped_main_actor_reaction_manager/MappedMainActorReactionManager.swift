@@ -49,23 +49,23 @@ public struct MappedMainActorReactionManager
     private let transform: @MainActor (UpstreamEvent)->Event
     
     ///
-    public func registerReaction_weakClosure
+    public func _registerReaction_weakClosure
         (key: String,
          _ reaction: @escaping @MainActor (Event)->())
     -> @MainActor ()->() {
         
         ///
-        base.registerReaction_weakClosure(key: key) {
+        base._registerReaction_weakClosure(key: key) {
             reaction(transform($0))
         }
     }
     
     ///
-    public func unregisterReaction_weakClosure
+    public func _unregisterReaction_weakClosure
         (forKey key: String)
     -> @MainActor ()->() {
         
         ///
-        base.unregisterReaction_weakClosure(forKey: key)
+        base._unregisterReaction_weakClosure(forKey: key)
     }
 }

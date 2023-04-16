@@ -9,13 +9,13 @@
 public protocol Interface_MainActorReactionManager <Event> {
     
     ///
-    func registerReaction_weakClosure
+    func _registerReaction_weakClosure
         (key: String,
          _ reaction: @escaping @MainActor (Event)->())
     -> @MainActor ()->()
     
     ///
-    func unregisterReaction_weakClosure
+    func _unregisterReaction_weakClosure
         (forKey key: String)
     -> @MainActor ()->()
     

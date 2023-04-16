@@ -20,7 +20,7 @@ extension Interface_MainActorReactionManager {
          _ reaction: @escaping @MainActor (Event)->()) {
         
         ///
-        registerReaction_weakClosure(key: key, reaction)()
+        _registerReaction_weakClosure(key: key, reaction)()
     }
     
     ///
@@ -29,7 +29,7 @@ extension Interface_MainActorReactionManager {
         (forKey key: String) {
         
         ///
-        unregisterReaction_weakClosure(forKey: key)()
+        _unregisterReaction_weakClosure(forKey: key)()
     }
 }
 
@@ -64,7 +64,7 @@ extension Interface_MainActorReactionManager {
         ///
         let reactionRetainer =
             ReactionRetainer(
-                unregisterReaction: self.unregisterReaction_weakClosure(forKey: key)
+                unregisterReaction: self._unregisterReaction_weakClosure(forKey: key)
             )
         
         ///
