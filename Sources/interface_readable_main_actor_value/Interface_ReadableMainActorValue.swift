@@ -28,7 +28,7 @@ extension Interface_ReadableMainActorValue {
     
     ///
     @MainActor
-    public func accessCurrentSources () {
+    public func _accessCurrentSources () {
         _ = self.currentValue
     }
 }

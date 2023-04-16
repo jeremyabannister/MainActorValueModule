@@ -154,7 +154,7 @@ fileprivate extension Interface_MainActorValueSourceAccessor {
             MainActorValueSourceMonitor
                 .shared
                 .generateValueAndReportAccessedSources(
-                    using: { self.accessCurrentSources() }
+                    using: { self._accessCurrentSources() }
                 )
                 .accessedSources
     }

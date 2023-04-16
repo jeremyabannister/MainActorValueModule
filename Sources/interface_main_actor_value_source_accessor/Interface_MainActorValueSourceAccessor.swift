@@ -10,5 +10,5 @@ public protocol Interface_MainActorValueSourceAccessor {
     
     ///
     @MainActor
-    func accessCurrentSources ()
+    func _accessCurrentSources ()
 }
