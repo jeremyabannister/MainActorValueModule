@@ -8,9 +8,7 @@
 ///
 internal protocol
     Interface_MainActorValueSource:
+        Interface_MainActorValueBinding,
         Interface_SubscribableMainActorValue {
     
-    ///
-    @MainActor
-    var currentValue: Value { get set }
 }

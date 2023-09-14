@@ -7,5 +7,6 @@
 
 ///
 @_exported import FoundationToolkit
+@_exported import MainActorValueModule_interface_main_actor_value_binding
 @_exported import MainActorValueModule_interface_subscribable_main_actor_value
 @_exported import MainActorValueModule_main_actor_reaction_managers

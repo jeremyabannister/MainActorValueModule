@@ -27,6 +27,7 @@ let package = Package(
             submoduleDependencies: [
                 "combine_compatibility",
                 "main_actor_value",
+                "main_actor_value_binding",
                 "main_actor_value_source",
                 "map",
             ]
@@ -54,16 +55,29 @@ let package = Package(
         testedSubmoduleTarget(
             name: "main_actor_value_source",
             submoduleDependencies: [
+                "interface_main_actor_value_binding",
                 "interface_subscribable_main_actor_value",
                 "main_actor_reaction_managers",
             ],
             otherDependencies: ["FoundationToolkit"]
         ),
         submoduleTarget(
+            name: "main_actor_value_binding",
+            submoduleDependencies: [
+                "interface_main_actor_value_binding",
+            ]
+        ),
+        submoduleTarget(
             name: "interface_subscribable_main_actor_value",
             submoduleDependencies: [
                 "interface_main_actor_reaction_manager",
                 "interface_readable_main_actor_value",
+            ]
+        ),
+        submoduleTarget(
+            name: "interface_main_actor_value_binding",
+            submoduleDependencies: [
+                "interface_readable_main_actor_value"
             ]
         ),
         submoduleTarget(
