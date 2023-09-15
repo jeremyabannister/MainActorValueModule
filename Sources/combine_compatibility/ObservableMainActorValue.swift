@@ -187,7 +187,7 @@ private extension MainActorValuePublisher {
                     .registerReaction { [subscriber] newValue in
                         guard let remainingDemand = self.remainingDemand else { return }
                         guard remainingDemand != Subscribers.Demand.none else { return }
-                        self.remainingDemand = subscriber.receive(newValue)
+                        self.remainingDemand = (remainingDemand - 1) + subscriber.receive(newValue)
                     }
         }
         

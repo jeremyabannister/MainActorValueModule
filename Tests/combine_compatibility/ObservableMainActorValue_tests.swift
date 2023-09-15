@@ -10,7 +10,7 @@ final class Interface_ReadableMainActorValue_tests: XCTestCase {
     
     ///
     @MainActor
-    func test_asObservableMainActorValue () async throws {
+    func test_asObservableMainActorValue () async {
         
         ///
         let source = MainActorValueSource(initialValue: 7)
@@ -73,10 +73,10 @@ final class Interface_ReadableMainActorValue_tests: XCTestCase {
         }
         
         ///
-        try await Task.sleep(seconds: 0.1)
-        try assert(value: 7, changeCount: 0)
-        try await setAndAssert(value: 8, changeCount: 1)
-        try await setAndAssert(value: 8, changeCount: 2)
-        try await setAndAssert(value: 0, changeCount: 3)
+        try! await Task.sleep(seconds: 0.1)
+        try! assert(value: 7, changeCount: 0)
+        try! await setAndAssert(value: 8, changeCount: 1)
+        try! await setAndAssert(value: 8, changeCount: 2)
+        try! await setAndAssert(value: 0, changeCount: 3)
     }
 }
