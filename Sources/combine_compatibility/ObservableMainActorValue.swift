@@ -76,7 +76,7 @@ extension Interface_SubscribableMainActorValue {
 }
 
 ///
-fileprivate struct MainActorValuePublisher <Value>: Publisher {
+internal struct MainActorValuePublisher <Value>: Publisher {
     
     ///
     typealias Output = Value
