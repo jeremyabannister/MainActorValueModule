@@ -10,179 +10,213 @@
 @_exported import MainActorValueModule_main_actor_value_source
 
 
-// MARK: - ObservableMainActorValue
+///
+public final class ObservableMainActorValue <Value>: ObservableObject,
+                                                     Interface_ReadableMainActorValue {
+    
+    ///
+    public let objectWillChange: AnyPublisher<Void, Never>
+    
+    ///
+    private let value: any Interface_ReadableMainActorValue<Value>
+    
+    ///
+    @MainActor
+    public var currentValue: Value {
+        value.currentValue
+    }
+    
+    ///
+    public init (_ value: some Interface_ReadableMainActorValue<Value>) {
+        
+        ///
+        self.value = value
+        
+        ///
+        self.objectWillChange =
+            MainActorValuePublisher(
+                readOnlyValue: value
+            )
+                .map { _ in () }
+                .eraseToAnyPublisher()
+    }
+    
+    ///
+    public init (_ value: some Interface_SubscribableMainActorValue<Value>) {
+        
+        ///
+        self.value = value
+        
+        ///
+        self.objectWillChange =
+            MainActorValuePublisher(
+                subscribableValue: value
+            )
+                .map { _ in () }
+                .eraseToAnyPublisher()
+    }
+}
 
 ///
 extension Interface_ReadableMainActorValue {
     
     ///
-    @MainActor
     public func asObservableMainActorValue () -> ObservableMainActorValue<Value> {
-        
-        ///
-        let newObservableMainActorValue =
-            ObservableMainActorValue(
-                readableValue: self
-            )
-        
-        ///
-        return newObservableMainActorValue
+        .init(self)
     }
 }
 
 ///
-extension MainActorValueSource {
+extension Interface_SubscribableMainActorValue {
     
     ///
-    @MainActor
-    public func asObservableMainActorValueSource () -> ObservableMainActorValueSource<Value> {
-        
-        ///
-        let newObservableMainActorValueSource =
-            ObservableMainActorValueSource(
-                source: self
-            )
-        
-        ///
-        return newObservableMainActorValueSource
+    public func asObservableMainActorValue () -> ObservableMainActorValue<Value> {
+        .init(self)
     }
 }
 
 ///
-public actor
-    ObservableMainActorValue
-        <Value>:
-            Interface_SubscribableMainActorValue,
-            ObservableObject,
-            ReferenceType {
+fileprivate struct MainActorValuePublisher <Value>: Publisher {
     
     ///
-    private let uuid = UUID()
+    typealias Output = Value
+    typealias Failure = Never
     
     ///
-    @MainActor
-    fileprivate init
-        (readableValue: some Interface_ReadableMainActorValue<Value>) {
-        
-        ///
-        let objectWillChange = PassthroughSubject<Void, Never>()
-        
-        ///
-        self.objectWillChange = objectWillChange.eraseToAnyPublisher()
-        
-        ///
-        let subscribableValue = readableValue.madeSubscribable()
-        
-        ///
-        self.subscribableValue = subscribableValue
-        
-        ///
-        subscribableValue
-            .willSet
-            .registerReaction(key: self.uuid.uuidString) { [objectWillChange] _ in
-                objectWillChange.send()
-            }
+    private let mainActorValue: MainActorValueType
+    
+    ///
+    private enum MainActorValueType {
+        case readOnly (any Interface_ReadableMainActorValue<Value>)
+        case subscribable (any Interface_SubscribableMainActorValue<Value>)
     }
     
     ///
-    private let subscribableValue: SubscribableMainActorValue<Value>
+    init (readOnlyValue: some Interface_ReadableMainActorValue<Value>) {
+        self.mainActorValue = .readOnly(readOnlyValue)
+    }
     
     ///
-    deinit {
-        Task { @MainActor [subscribableValue, uuid] in
-            subscribableValue
-                .willSet
-                .unregisterReaction(forKey: uuid.uuidString)
+    init (subscribableValue: some Interface_SubscribableMainActorValue<Value>) {
+        self.mainActorValue = .subscribable(subscribableValue)
+    }
+    
+    ///
+    func receive
+        <S: Subscriber>
+        (subscriber: S)
+    where S.Input == Output,
+          S.Failure == Failure {
+        
+        ///
+        let subscription: Subscription<S>
+              
+        ///
+        switch mainActorValue {
+        case .readOnly (let readOnlyValue):
+            subscription = Subscription(readOnlyValue: readOnlyValue, subscriber: subscriber)
+            
+        case .subscribable (let subscribableValue):
+            subscription = Subscription(subscribableValue: subscribableValue, subscriber: subscriber)
         }
-    }
-    
-    ///
-    public nonisolated let objectWillChange: AnyPublisher<Void, Never>
-    
-    ///
-    public nonisolated var rootObjectID: ObjectID {
-        fatalError()
-    }
-    
-    ///
-    public nonisolated var willSet: any Interface_MainActorReactionManager<Void> {
-        subscribableValue.willSet
-    }
-    
-    ///
-    public nonisolated var didSet: any Interface_MainActorReactionManager<Value> {
-        subscribableValue.didSet
-    }
-    
-    ///
-    @MainActor
-    public var currentValue: Value {
-        subscribableValue.currentValue
+        
+        ///
+        subscriber.receive(subscription: subscription)
     }
 }
 
 ///
-public actor
-    ObservableMainActorValueSource
-        <Value>:
-            Interface_SubscribableMainActorValue,
-            ObservableObject,
-            ReferenceType {
+private extension MainActorValuePublisher {
     
     ///
-    private let uuid = UUID()
-    
-    ///
-    @MainActor
-    fileprivate init
-        (source: MainActorValueSource<Value>) {
+    final class Subscription <S: Subscriber>: Combine.Subscription
+        where S.Input == Value,
+              S.Failure == Never {
         
         ///
-        let objectWillChange = PassthroughSubject<Void, Never>()
+        private let subscriber: S
+        private var subscribableValueRetainer: Any? = nil
+        private var reactionRetainer: ReactionRetainer? = nil
+        
+        /// When remaining demand equals nil it means that the subscription has been cancelled
+        @MainActor
+        private var remainingDemand: Subscribers.Demand? = Subscribers.Demand.none
         
         ///
-        self.objectWillChange = objectWillChange.eraseToAnyPublisher()
-        
-        ///
-        self.source = source
-        
-        ///
-        source
-            .willSet
-            .registerReaction(key: self.uuid.uuidString) { [objectWillChange] _ in
-                objectWillChange.send()
+        init
+            (readOnlyValue: some Interface_ReadableMainActorValue<Value>,
+             subscriber: S) {
+            
+            ///
+            self.subscriber = subscriber
+            
+            ///
+            Task { @MainActor in
+                setupReaction(
+                    using: readOnlyValue.madeSubscribable()
+                )
             }
-    }
-    
-    ///
-    private let source: MainActorValueSource<Value>
-    
-    ///
-    deinit {
-        Task { @MainActor [source, uuid] in
-            source
-                .willSet
-                .unregisterReaction(forKey: uuid.uuidString)
         }
-    }
-    
-    ///
-    public nonisolated let objectWillChange: AnyPublisher<Void, Never>
-    
-    ///
-    public nonisolated var willSet: any Interface_MainActorReactionManager<Void> {
-        source.willSet
-    }
-    
-    ///
-    public nonisolated var didSet: any Interface_MainActorReactionManager<Value> {
-        source.didSet
-    }
-    
-    ///
-    @MainActor
-    public var currentValue: Value {
-        get { source.currentValue }
-        set { source.currentValue = newValue }
+        
+        ///
+        init
+            (subscribableValue: some Interface_SubscribableMainActorValue<Value>,
+             subscriber: S) {
+            
+            ///
+            self.subscriber = subscriber
+            
+            ///
+            Task { @MainActor in
+                setupReaction(using: subscribableValue)
+            }
+        }
+        
+        ///
+        @MainActor
+        private func setupReaction
+            (using subscribableValue: some Interface_SubscribableMainActorValue<Value>) {
+            
+            ///
+            self.subscribableValueRetainer = subscribableValue
+            
+            ///
+            reactionRetainer =
+                subscribableValue
+                    .didSet
+                    .registerReaction { [subscriber] newValue in
+                        guard let remainingDemand = self.remainingDemand else { return }
+                        guard remainingDemand != Subscribers.Demand.none else { return }
+                        self.remainingDemand = subscriber.receive(newValue)
+                    }
+        }
+        
+        ///
+        func request (_ demand: Subscribers.Demand) {
+            
+            ///
+            Task { @MainActor in
+                if let remainingDemand {
+                    if demand == .unlimited {
+                        self.remainingDemand = .unlimited
+                    } else {
+                        if remainingDemand != .unlimited {
+                            self.remainingDemand = remainingDemand + demand
+                        }
+                    }
+                }
+            }
+        }
+        
+        ///
+        func cancel () {
+            
+            ///
+            Task { @MainActor in
+                remainingDemand = nil
+                subscribableValueRetainer = nil
+                reactionRetainer = nil
+            }
+        }
     }
 }
