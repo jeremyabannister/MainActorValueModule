@@ -55,7 +55,7 @@ public struct MappedMainActorReactionManager
     -> @MainActor ()->() {
         
         ///
-        base._registerReaction_weakClosure(key: key) {
+        base._registerReaction_weakClosure(key: key) { [transform] in
             reaction(transform($0))
         }
     }
@@ -67,5 +67,10 @@ public struct MappedMainActorReactionManager
         
         ///
         base._unregisterReaction_weakClosure(forKey: key)
+    }
+    
+    ///
+    public var leakTracker: LeakTracker {
+        base.leakTracker
     }
 }

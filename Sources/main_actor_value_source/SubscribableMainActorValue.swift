@@ -10,9 +10,12 @@ extension Interface_ReadableMainActorValue {
     
     ///
     @MainActor
-    public func madeSubscribable () -> SubscribableMainActorValue<Value> {
+    public func madeSubscribable
+        (leakTracker: LeakTracker)
+    -> SubscribableMainActorValue<Value> {
         SubscribableMainActorValue(
-            readableValue: self
+            readableValue: self,
+            leakTracker: leakTracker
         )
     }
 }
@@ -25,36 +28,61 @@ public actor
     
     ///
     @MainActor
-    public init (readableValue: any Interface_ReadableMainActorValue<Value>) {
-        self.init({ readableValue.currentValue })
+    public init
+        (readableValue: any Interface_ReadableMainActorValue<Value>,
+         leakTracker: LeakTracker) {
+        
+        ///
+        self.init(
+            generateValue: { readableValue.currentValue },
+            leakTracker: leakTracker
+        )
     }
     
     ///
     @MainActor
-    public init (_ generateValue: @escaping @MainActor ()->Value) {
+    public init
+        (generateValue: @escaping @MainActor ()->Value,
+         leakTracker: LeakTracker) {
+        
+        ///
+        let optionalGenerateValueClosure: MainActorClosure_0Inputs<Value?> =
+            .init { generateValue() }
         
         ///
         self.generateValue = generateValue
+        self.optionalGenerateValueClosure = optionalGenerateValueClosure
         
         ///
-        let _willSet = MainActorReactionManager<Void>()
-        let _didSet = MainActorReactionManager<Value>()
+        let _willSet =
+            MainActorReactionManager<Void>(
+                leakTracker: leakTracker["_willSet"]
+            )
+        let _didSet =
+            MainActorReactionManager<Value>(
+                leakTracker: leakTracker["_didSet"]
+            )
         
         ///
         self._willSet = _willSet
         self._didSet = _didSet
         
         ///
+        leakTracker.track(self)
+        
+        ///
         setupChangeNotificationForwarding(
             sourceObjectID: nil,
-            generateValue: generateValue,
+            generateValue: optionalGenerateValueClosure,
             _willSet: _willSet,
-            _didSet: _didSet
+            _didSet: _didSet,
+            leakTracker: leakTracker
         )
     }
     
     ///
     private let generateValue: @MainActor ()->Value
+    private let optionalGenerateValueClosure: MainActorClosure_0Inputs<Value?>
     
     ///
     private let id = UUID()

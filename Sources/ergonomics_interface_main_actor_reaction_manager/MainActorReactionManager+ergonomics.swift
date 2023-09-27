@@ -64,6 +64,7 @@ extension Interface_MainActorReactionManager {
         ///
         let reactionRetainer =
             ReactionRetainer(
+                leakTracker: leakTracker["ReactionRetainer(\(key))"],
                 unregisterReaction: self._unregisterReaction_weakClosure(forKey: key)
             )
         
@@ -74,8 +75,12 @@ extension Interface_MainActorReactionManager {
 
 ///
 public actor ReactionRetainer {
-    fileprivate init (unregisterReaction: @escaping @MainActor ()->()) {
+    @MainActor
+    fileprivate init
+        (leakTracker: LeakTracker,
+         unregisterReaction: @escaping @MainActor ()->()) {
         self.unregisterReaction = unregisterReaction
+        leakTracker.track(self)
     }
     private let unregisterReaction: @MainActor ()->()
     deinit {

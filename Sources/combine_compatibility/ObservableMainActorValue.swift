@@ -27,7 +27,10 @@ public final class ObservableMainActorValue <Value>: ObservableObject,
     }
     
     ///
-    public init (_ value: some Interface_ReadableMainActorValue<Value>) {
+    @MainActor
+    public init
+        (_ value: some Interface_ReadableMainActorValue<Value>,
+         leakTracker: LeakTracker) {
         
         ///
         self.value = value
@@ -35,10 +38,14 @@ public final class ObservableMainActorValue <Value>: ObservableObject,
         ///
         self.objectWillChange =
             MainActorValuePublisher(
-                readOnlyValue: value
+                readOnlyValue: value,
+                leakTracker: leakTracker
             )
                 .map { _ in () }
                 .eraseToAnyPublisher()
+        
+        ///
+        leakTracker.track(self)
     }
     
     ///
@@ -61,8 +68,11 @@ public final class ObservableMainActorValue <Value>: ObservableObject,
 extension Interface_ReadableMainActorValue {
     
     ///
-    public func asObservableMainActorValue () -> ObservableMainActorValue<Value> {
-        .init(self)
+    @MainActor
+    public func asObservableMainActorValue
+        (leakTracker: LeakTracker)
+    -> ObservableMainActorValue<Value> {
+        .init(self, leakTracker: leakTracker)
     }
 }
 
@@ -87,13 +97,17 @@ internal struct MainActorValuePublisher <Value>: Publisher {
     
     ///
     private enum MainActorValueType {
-        case readOnly (any Interface_ReadableMainActorValue<Value>)
+        case readOnly (any Interface_ReadableMainActorValue<Value>, LeakTracker)
         case subscribable (any Interface_SubscribableMainActorValue<Value>)
     }
     
     ///
-    init (readOnlyValue: some Interface_ReadableMainActorValue<Value>) {
-        self.mainActorValue = .readOnly(readOnlyValue)
+    init
+        (readOnlyValue: some Interface_ReadableMainActorValue<Value>,
+         leakTracker: LeakTracker) {
+        
+        ///
+        self.mainActorValue = .readOnly(readOnlyValue, leakTracker)
     }
     
     ///
@@ -113,11 +127,21 @@ internal struct MainActorValuePublisher <Value>: Publisher {
               
         ///
         switch mainActorValue {
-        case .readOnly (let readOnlyValue):
-            subscription = Subscription(readOnlyValue: readOnlyValue, subscriber: subscriber)
+        case .readOnly (let readOnlyValue,
+                        let leakTracker):
+            subscription =
+                Subscription(
+                    readOnlyValue: readOnlyValue,
+                    subscriber: subscriber,
+                    leakTracker: leakTracker["subscription"]
+                )
             
         case .subscribable (let subscribableValue):
-            subscription = Subscription(subscribableValue: subscribableValue, subscriber: subscriber)
+            subscription =
+                Subscription(
+                    subscribableValue: subscribableValue,
+                    subscriber: subscriber
+                )
         }
         
         ///
@@ -145,16 +169,24 @@ private extension MainActorValuePublisher {
         ///
         init
             (readOnlyValue: some Interface_ReadableMainActorValue<Value>,
-             subscriber: S) {
+             subscriber: S,
+             leakTracker: LeakTracker) {
             
             ///
             self.subscriber = subscriber
             
             ///
             Task { @MainActor in
+                
+                ///
                 setupReaction(
-                    using: readOnlyValue.madeSubscribable()
+                    using: readOnlyValue.madeSubscribable(
+                        leakTracker: leakTracker["madeSubscribable"]
+                    )
                 )
+                
+                ///
+                leakTracker.track(self)
             }
         }
         

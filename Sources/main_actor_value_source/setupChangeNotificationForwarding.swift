@@ -10,16 +10,25 @@
 internal func setupChangeNotificationForwarding
     <Value>
     (sourceObjectID: ObjectID?,
-     generateValue: @escaping @MainActor ()->Value?,
+     generateValue: MainActorClosure_0Inputs<Value?>,
      _willSet: MainActorReactionManager<Void>,
-     _didSet: MainActorReactionManager<Value>) {
+     _didSet: MainActorReactionManager<Value>,
+     leakTracker: LeakTracker) {
     
     ///
     let uniqueID = UUID()
     
     ///
-    let latestAccessedSources =
-        MainActorValueSource<[ObjectID: any Interface_MainActorValueSource]>(initialValue: [:])
+    let latestAccessedSources: MainActorValueSource<[ObjectID: any Interface_MainActorValueSource]> =
+        .init(
+            initialValue: [:],
+            leakTracker: leakTracker
+        )
+    
+    ///
+    weak var weak_willSet = _willSet
+    weak var weak_didSet = _didSet
+    weak var weak_generateValue = generateValue
     
     ///
     @MainActor
@@ -66,22 +75,22 @@ internal func setupChangeNotificationForwarding
             ///
             newSource
                 .willSet
-                .registerReaction(key: uniqueID.uuidString) { [_willSet] _ in
-                    for reaction in _willSet.orderedReactions {
+                .registerReaction(key: uniqueID.uuidString) { _ in
+                    for reaction in (weak_willSet?.orderedReactions ?? []) {
                         reaction(())
                     }
                 }
             
             ///
             newSource
-                .didSet_Void
-                .registerReaction(key: uniqueID.uuidString) { [_didSet] _ in
+                .didSet_erased
+                .registerReaction(key: uniqueID.uuidString) { _ in
                     
                     ///
-                    guard let newValue = generateValue() else { return }
+                    guard let newValue = weak_generateValue?() else { return }
                     
                     ///
-                    for reaction in _didSet.orderedReactions {
+                    for reaction in (weak_didSet?.orderedReactions ?? []) {
                         reaction(newValue)
                     }
                 }
@@ -121,7 +130,11 @@ internal func setupChangeNotificationForwarding
     }
     
     ///
-    let retainer = MainActorValueSource<Any?>(initialValue: nil)
+    let retainer: MainActorValueSource<Any?> =
+        .init(
+            initialValue: nil,
+            leakTracker: leakTracker
+        )
     
     ///
     retainer
@@ -154,7 +167,7 @@ fileprivate extension Interface_MainActorValueSourceAccessor {
             MainActorValueSourceMonitor
                 .shared
                 .generateValueAndReportAccessedSources(
-                    using: { self._accessCurrentSources() }
+                    using: .init { self._accessCurrentSources() }
                 )
                 .accessedSources
     }
@@ -164,9 +177,7 @@ fileprivate extension Interface_MainActorValueSourceAccessor {
 fileprivate extension Interface_SubscribableMainActorValue {
     
     ///
-    var didSet_Void: any Interface_MainActorReactionManager<Void> {
-        self
-            .didSet
-            .map { _ in () }
+    var didSet_erased: any Interface_MainActorReactionManager {
+        self.didSet
     }
 }

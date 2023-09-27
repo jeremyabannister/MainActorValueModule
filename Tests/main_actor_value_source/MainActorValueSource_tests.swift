@@ -10,17 +10,30 @@ final class MainActorValueSource_tests: XCTestCase {
     
     ///
     @MainActor
-    func test_init_initialValue_withDeepChangeMonitoring () async throws {
+    func test_init_initialValue_withDeepChangeMonitoring () async {
         
         ///
-        let source =
-            MainActorValueSource(
-                initialValue: MainActorValueSource(initialValue: false),
+        let rootLeakTracker = RootLeakTracker(name: #function)
+        let leakTracker = rootLeakTracker.asLeakTracker
+        
+        ///
+        var source: MainActorValueSource<MainActorValueSource<Bool>>! =
+            .init(
+                initialValue:
+                    MainActorValueSource(
+                        initialValue: false,
+                        leakTracker: leakTracker["nestedSource"]
+                    ),
+                leakTracker: leakTracker["source"],
                 withDeepChangeMonitoring: ()
             )
         
         ///
-        let didSetOutput = MainActorValueSource<[Bool]>(initialValue: [])
+        var didSetOutput: MainActorValueSource<[Bool]>! =
+            .init(
+                initialValue: [],
+                leakTracker: leakTracker["didSetOutput"]
+            )
         
         ///
         source
@@ -31,7 +44,7 @@ final class MainActorValueSource_tests: XCTestCase {
             }
         
         ///
-        try didSetOutput
+        try! didSetOutput
             .currentValue
             .assertEqual(to: [])
         
@@ -41,7 +54,7 @@ final class MainActorValueSource_tests: XCTestCase {
             .setValue(to: true)
         
         ///
-        try didSetOutput
+        try! didSetOutput
             .currentValue
             .assertEqual(to: [true])
         
@@ -51,32 +64,60 @@ final class MainActorValueSource_tests: XCTestCase {
             .setValue(to: true)
         
         ///
-        try didSetOutput
+        try! didSetOutput
             .currentValue
             .assertEqual(to: [true, true])
         
         ///
         source
-            .setValue(to: .init(initialValue: false))
+            .setValue(
+                to: .init(
+                    initialValue: false,
+                    leakTracker: leakTracker["newNestedSource"]
+                )
+            )
         
         ///
-        try didSetOutput
+        try! didSetOutput
             .currentValue
             .assertEqual(to: [true, true, false])
+        
+        ///
+        source = nil
+        didSetOutput = nil
+        
+        ///
+        try! rootLeakTracker.assertNoLeaks()
     }
     
     ///
     @MainActor
-    func test_madeSubscribable () async throws {
+    func test_madeSubscribable () async {
         
         ///
-        let source = MainActorValueSource(initialValue: 7)
+        let rootLeakTracker = RootLeakTracker(name: #function)
+        let leakTracker = rootLeakTracker.asLeakTracker
         
         ///
-        let subscribableSource = source.madeSubscribable()
+        var source: MainActorValueSource<Int>! =
+            .init(
+                initialValue: 7,
+                leakTracker: leakTracker["source"]
+            )
         
         ///
-        let reactionLog = MainActorValueSource(initialValue: [Int]())
+        var subscribableSource: SubscribableMainActorValue<Int>! =
+            source
+                .madeSubscribable(
+                    leakTracker: leakTracker["subscribableSource"]
+                )
+        
+        ///
+        var reactionLog: MainActorValueSource<[Int]>! =
+            .init(
+                initialValue: [Int](),
+                leakTracker: leakTracker["reactionLog"]
+            )
         
         ///
         subscribableSource
@@ -87,22 +128,30 @@ final class MainActorValueSource_tests: XCTestCase {
             }
         
         ///
-        try reactionLog
+        try! reactionLog
             .currentValue
             .assertEqual(to: [])
         
         ///
-        try await Task.sleep(seconds: 0.1)
+        try! await Task.sleep(seconds: 0.1)
         
         ///
         source.setValue(to: 8)
         
         ///
-        try await Task.sleep(seconds: 0.1)
+        try! await Task.sleep(seconds: 0.1)
         
         ///
-        try reactionLog
+        try! reactionLog
             .currentValue
             .assertEqual(to: [8])
+        
+        ///
+        source = nil
+        subscribableSource = nil
+        reactionLog = nil
+        
+        ///
+        try! rootLeakTracker.assertNoLeaks()
     }
 }

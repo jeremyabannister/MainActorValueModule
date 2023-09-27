@@ -6,6 +6,10 @@
 //
 
 ///
+@_exported import LeakTracker_module
+
+
+///
 public protocol Interface_MainActorReactionManager <Event> {
     
     ///
@@ -18,6 +22,9 @@ public protocol Interface_MainActorReactionManager <Event> {
     func _unregisterReaction_weakClosure
         (forKey key: String)
     -> @MainActor ()->()
+    
+    ///
+    var leakTracker: LeakTracker { get }
     
     ///
     associatedtype Event

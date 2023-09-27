@@ -22,7 +22,7 @@ internal actor MainActorValueSourceMonitor {
     @MainActor
     func generateValueAndReportAccessedSources
         <Value>
-        (using generateValue: @escaping @MainActor ()->Value)
+        (using generateValue: MainActorClosure_0Inputs<Value>)
     -> (value: Value, accessedSources: [ObjectID: any Interface_MainActorValueSource]) {
         
         ///

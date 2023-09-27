@@ -6,7 +6,7 @@
 //
 
 ///
-public actor
+public final class
     MainActorValueSource
         <Value>:
             Interface_SubscribableMainActorValue,
@@ -15,42 +15,126 @@ public actor
     
     ///
     @MainActor
-    public init
+    public convenience init
         (initialValue: Value,
+         leakTracker: LeakTracker,
          withDeepChangeMonitoring: Void)
     where Value: Interface_MainActorValueSourceAccessor {
         
         ///
         self.init(
-            initialValue: initialValue
+            initialValue: initialValue,
+            leakTracker: leakTracker
         )
         
         ///
         setupChangeNotificationForwarding(
             sourceObjectID: self.objectID,
-            generateValue: { [weak self] in self?.currentValue },
+            generateValue: .init { [weak self] in self?.currentValue },
             _willSet: self._willSet,
-            _didSet: self._didSet
+            _didSet: self._didSet,
+            leakTracker: leakTracker["setupChangeNotificationForwarding"]
         )
     }
     
     ///
-    public init (initialValue: Value) {
+    @MainActor
+    public convenience init
+        (initialValue: Value,
+         leakTracker: LeakTracker) {
+        
+        ///
         self.init(
-            _valueStorage: .value(initialValue)
+            _valueStorage: .value(initialValue),
+            leakTracker: leakTracker
         )
     }
     
     ///
-    public init (uninitializedValue: @escaping @MainActor ()->Value) {
+    public convenience init
+        (initialValue: Value,
+         leakTracker: LeakTracker,
+         nonisolatedOverload: Void) {
+        
+        ///
         self.init(
-            _valueStorage: .notYetComputed(uninitializedValue)
+            _valueStorage: .value(initialValue),
+            leakTracker: leakTracker,
+            nonisolatedOverload: ()
         )
     }
     
     ///
-    private init (_valueStorage: ValueStorage) {
+    @MainActor
+    public convenience init
+        (uninitializedValue: @escaping @MainActor ()->Value,
+         leakTracker: LeakTracker) {
+        
+        ///
+        self.init(
+            _valueStorage: .notYetComputed(uninitializedValue),
+            leakTracker: leakTracker
+        )
+    }
+    
+    ///
+    public convenience init
+        (uninitializedValue: @escaping @MainActor ()->Value,
+         leakTracker: LeakTracker,
+         nonisolatedOverload: Void) {
+        
+        ///
+        self.init(
+            _valueStorage: .notYetComputed(uninitializedValue),
+            leakTracker: leakTracker,
+            nonisolatedOverload: ()
+        )
+    }
+    
+    ///
+    @MainActor
+    private init
+        (_valueStorage: ValueStorage,
+         leakTracker: LeakTracker) {
+        
+        ///
         self._valueStorage = _valueStorage
+        self._willSet =
+            MainActorReactionManager(
+                leakTracker: leakTracker["_willSet"]
+            )
+        self._didSet =
+            MainActorReactionManager(
+                leakTracker: leakTracker["_didSet"]
+            )
+        
+        ///
+        leakTracker.track(self)
+    }
+    
+    ///
+    private init
+        (_valueStorage: ValueStorage,
+         leakTracker: LeakTracker,
+         nonisolatedOverload: Void) {
+        
+        ///
+        self._valueStorage = _valueStorage
+        self._willSet =
+            MainActorReactionManager(
+                leakTracker: leakTracker["_willSet"],
+                nonisolatedOverload: ()
+            )
+        self._didSet =
+            MainActorReactionManager(
+                leakTracker: leakTracker["_didSet"],
+                nonisolatedOverload: ()
+            )
+        
+        ///
+        Task { @MainActor in
+            leakTracker.track(self)
+        }
     }
     
     ///
@@ -64,8 +148,8 @@ public actor
     }
     
     ///
-    private let _willSet = MainActorReactionManager<Void>()
-    private let _didSet = MainActorReactionManager<Value>()
+    private let _willSet: MainActorReactionManager<Void>
+    private let _didSet: MainActorReactionManager<Value>
 }
 
 ///

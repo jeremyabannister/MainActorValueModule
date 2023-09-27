@@ -13,7 +13,15 @@ final class Interface_ReadableMainActorValue_tests: XCTestCase {
     func test_asObservableMainActorValue () async {
         
         ///
-        let source = MainActorValueSource(initialValue: 7)
+        let rootLeakTracker = RootLeakTracker(name: #function)
+        let leakTracker = rootLeakTracker.asLeakTracker
+        
+        ///
+        var source: MainActorValueSource<Int>! =
+            .init(
+                initialValue: 7,
+                leakTracker: leakTracker["source"]
+            )
         
         ///
         func createObservable
@@ -22,14 +30,20 @@ final class Interface_ReadableMainActorValue_tests: XCTestCase {
         -> ObservableMainActorValue<Value> {
             
             ///
-            readOnly.asObservableMainActorValue()
+            readOnly.asObservableMainActorValue(
+                leakTracker: leakTracker["observable"]
+            )
         }
         
         ///
-        let observable = createObservable(using: source)
+        var observable: ObservableMainActorValue<Int>! = createObservable(using: source)
         
         ///
-        let willChangeCount = MainActorValueSource(initialValue: 0)
+        var willChangeCount: MainActorValueSource<Int>! =
+            .init(
+                initialValue: 0,
+                leakTracker: leakTracker["willChangeCount"]
+            )
         
         ///
         @MainActor
@@ -40,12 +54,12 @@ final class Interface_ReadableMainActorValue_tests: XCTestCase {
         }
         
         ///
-        let subscription =
+        var subscription: Any! =
             observable
                 .objectWillChange
                 .sink { [willChangeCount] in
                     Task { @MainActor in
-                        willChangeCount
+                        willChangeCount?
                             .mutateValue { $0 += 1 }
                     }
                 }
@@ -78,5 +92,17 @@ final class Interface_ReadableMainActorValue_tests: XCTestCase {
         try! await setAndAssert(value: 8, changeCount: 1)
         try! await setAndAssert(value: 8, changeCount: 2)
         try! await setAndAssert(value: 0, changeCount: 3)
+        
+        ///
+        source = nil
+        observable = nil
+        willChangeCount = nil
+        subscription = nil
+        
+        ///
+        try? await Task.sleep(for: .seconds(1))
+        
+        ///
+        try! rootLeakTracker.assertNoLeaks()
     }
 }

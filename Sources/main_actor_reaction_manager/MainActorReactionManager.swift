@@ -8,11 +8,37 @@
 ///
 @_exported import MainActorValueModule_interface_main_actor_reaction_manager
 
+
 ///
 public actor MainActorReactionManager <Event>: Interface_MainActorReactionManager {
     
     ///
-    public init () { }
+    @MainActor
+    public init (leakTracker: LeakTracker) {
+        
+        ///
+        self.leakTracker = leakTracker
+        
+        ///
+        leakTracker.track(self)
+    }
+    
+    ///
+    public init
+        (leakTracker: LeakTracker,
+         nonisolatedOverload: Void) {
+        
+        ///
+        self.leakTracker = leakTracker
+        
+        ///
+        Task { @MainActor in
+            leakTracker.track(self)
+        }
+    }
+    
+    ///
+    public let leakTracker: LeakTracker
     
     ///
     @MainActor

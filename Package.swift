@@ -14,9 +14,17 @@ let package = Package(
         ),
     ],
     dependencies: [
+        
+        ///
         .package(
             url: "https://github.com/jeremyabannister/FoundationToolkit",
             "0.7.0" ..< "0.8.0"
+        ),
+        
+        ///
+        .package(
+            url: "https://github.com/jeremyabannister/LeakTracker-module",
+            "0.1.4" ..< "0.2.0"
         ),
     ],
     targets: expand([
@@ -92,7 +100,7 @@ let package = Package(
         
         
         ///
-        submoduleTarget(
+        testedSubmoduleTarget(
             name: "main_actor_reaction_managers",
             submoduleDependencies: [
                 "mapped_main_actor_reaction_manager",
@@ -114,7 +122,10 @@ let package = Package(
             submoduleDependencies: ["interface_main_actor_reaction_manager"]
         ),
         submoduleTarget(
-            name: "interface_main_actor_reaction_manager"
+            name: "interface_main_actor_reaction_manager",
+            otherDependencies: [
+                "LeakTracker-module",
+            ]
         ),
     ])
 )
