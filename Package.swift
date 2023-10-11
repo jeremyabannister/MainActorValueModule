@@ -24,7 +24,7 @@ let package = Package(
         ///
         .package(
             url: "https://github.com/jeremyabannister/LeakTracker-module",
-            "0.1.6" ..< "0.2.0"
+            "0.1.7" ..< "0.2.0"
         ),
     ],
     targets: expand([
