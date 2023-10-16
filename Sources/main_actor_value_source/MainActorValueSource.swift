@@ -6,6 +6,7 @@
 //
 
 ///
+@MainActor
 public final class
     MainActorValueSource
         <Value>:
@@ -14,7 +15,6 @@ public final class
             ReferenceType {
     
     ///
-    @MainActor
     public convenience init
         (initialValue: Value,
          leakTracker: LeakTracker,
@@ -38,7 +38,6 @@ public final class
     }
     
     ///
-    @MainActor
     public convenience init
         (initialValue: Value,
          leakTracker: LeakTracker) {
@@ -51,7 +50,7 @@ public final class
     }
     
     ///
-    public convenience init
+    public nonisolated convenience init
         (initialValue: Value,
          leakTracker: LeakTracker,
          nonisolatedOverload: Void) {
@@ -65,7 +64,6 @@ public final class
     }
     
     ///
-    @MainActor
     public convenience init
         (uninitializedValue: @escaping @MainActor ()->Value,
          leakTracker: LeakTracker) {
@@ -78,7 +76,7 @@ public final class
     }
     
     ///
-    public convenience init
+    public nonisolated convenience init
         (uninitializedValue: @escaping @MainActor ()->Value,
          leakTracker: LeakTracker,
          nonisolatedOverload: Void) {
@@ -92,7 +90,6 @@ public final class
     }
     
     ///
-    @MainActor
     private init
         (_valueStorage: ValueStorage,
          leakTracker: LeakTracker) {
@@ -113,7 +110,7 @@ public final class
     }
     
     ///
-    private init
+    private nonisolated init
         (_valueStorage: ValueStorage,
          leakTracker: LeakTracker,
          nonisolatedOverload: Void) {
@@ -138,7 +135,6 @@ public final class
     }
     
     ///
-    @MainActor
     private var _valueStorage: ValueStorage
     
     ///
@@ -160,7 +156,6 @@ extension MainActorValueSource {
     public nonisolated var didSet: any Interface_MainActorReactionManager<Value> { _didSet }
     
     ///
-    @MainActor
     public var currentValue: Value {
         
         ///
@@ -219,13 +214,11 @@ extension MainActorValueSource {
     }
     
     ///
-    @MainActor
     public func setValue (to newValue: Value) {
         self.currentValue = newValue
     }
     
     ///
-    @MainActor
     public func mutateValue (using mutation: (inout Value)->()) {
         var copy = currentValue
         mutation(&copy)
