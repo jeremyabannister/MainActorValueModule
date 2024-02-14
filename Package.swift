@@ -18,7 +18,7 @@ let package = Package(
         ///
         .package(
             url: "https://github.com/jeremyabannister/FoundationToolkit",
-            "0.7.0" ..< "0.8.0"
+            "0.7.9" ..< "0.8.0"
         ),
         
         ///
