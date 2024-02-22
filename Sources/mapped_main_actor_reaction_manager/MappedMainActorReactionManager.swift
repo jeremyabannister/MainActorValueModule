@@ -13,10 +13,11 @@
 extension Interface_MainActorReactionManager {
     
     ///
-    public func map
-        <NewEvent>
-        (_ transform: @escaping @MainActor (Event)->NewEvent)
-    -> MappedMainActorReactionManager<Event, NewEvent> {
+    public func map<
+        NewEvent
+    >(
+        _ transform: @escaping @MainActor (Event)->NewEvent
+    ) -> MappedMainActorReactionManager<Event, NewEvent> {
         
         ///
         .init(
@@ -28,15 +29,13 @@ extension Interface_MainActorReactionManager {
 
 
 ///
-public struct MappedMainActorReactionManager
-    <UpstreamEvent,
-     Event>:
-        Interface_MainActorReactionManager {
+public struct MappedMainActorReactionManager<UpstreamEvent, Event>: Interface_MainActorReactionManager {
     
     ///
-    fileprivate init
-        (base: some Interface_MainActorReactionManager<UpstreamEvent>,
-         transform: @escaping @MainActor (UpstreamEvent)->Event) {
+    fileprivate init(
+        base: some Interface_MainActorReactionManager<UpstreamEvent>,
+        transform: @escaping @MainActor (UpstreamEvent)->Event
+    ) {
         
         self.base = base
         self.transform = transform
@@ -49,10 +48,10 @@ public struct MappedMainActorReactionManager
     private let transform: @MainActor (UpstreamEvent)->Event
     
     ///
-    public func _registerReaction_weakClosure
-        (key: String,
-         _ reaction: @escaping @MainActor (Event)->())
-    -> @MainActor ()->() {
+    public func _registerReaction_weakClosure(
+        key: String,
+        _ reaction: @escaping @MainActor (Event)->()
+    ) -> @MainActor ()->() {
         
         ///
         base._registerReaction_weakClosure(key: key) { [transform] in
@@ -61,9 +60,9 @@ public struct MappedMainActorReactionManager
     }
     
     ///
-    public func _unregisterReaction_weakClosure
-        (forKey key: String)
-    -> @MainActor ()->() {
+    public func _unregisterReaction_weakClosure(
+        forKey key: String
+    ) -> @MainActor ()->() {
         
         ///
         base._unregisterReaction_weakClosure(forKey: key)

@@ -10,11 +10,11 @@
 
 
 ///
-public actor MainActorReactionManager <Event>: Interface_MainActorReactionManager {
+public actor MainActorReactionManager<Event>: Interface_MainActorReactionManager {
     
     ///
     @MainActor
-    public init (leakTracker: LeakTracker) {
+    public init(leakTracker: LeakTracker) {
         
         ///
         self.leakTracker = leakTracker
@@ -24,9 +24,10 @@ public actor MainActorReactionManager <Event>: Interface_MainActorReactionManage
     }
     
     ///
-    public init
-        (leakTracker: LeakTracker,
-         nonisolatedOverload: Void) {
+    public init(
+        leakTracker: LeakTracker,
+        nonisolatedOverload: Void
+    ) {
         
         ///
         self.leakTracker = leakTracker
@@ -56,10 +57,10 @@ public actor MainActorReactionManager <Event>: Interface_MainActorReactionManage
     }
     
     ///
-    public nonisolated func _registerReaction_weakClosure
-        (key: String,
-         _ reaction: @escaping @MainActor (Event)->())
-    -> @MainActor ()->() {
+    public nonisolated func _registerReaction_weakClosure(
+        key: String,
+        _ reaction: @escaping @MainActor (Event)->()
+    ) -> @MainActor ()->() {
         
         ///
         return { [weak self] in
@@ -83,9 +84,9 @@ public actor MainActorReactionManager <Event>: Interface_MainActorReactionManage
     }
     
     ///
-    public nonisolated func _unregisterReaction_weakClosure
-        (forKey key: String)
-    -> @MainActor () -> () {
+    public nonisolated func _unregisterReaction_weakClosure(
+        forKey key: String
+    ) -> @MainActor ()->() {
         
         ///
         return { [weak self] in

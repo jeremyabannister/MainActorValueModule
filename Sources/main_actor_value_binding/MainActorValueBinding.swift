@@ -10,12 +10,13 @@
 
 
 ///
-public struct MainActorValueBinding <Value>: Interface_MainActorValueBinding {
+public struct MainActorValueBinding<Value>: Interface_MainActorValueBinding {
     
     ///
-    public init
-        (get: @escaping @MainActor ()->Value,
-         set: @escaping @MainActor (Value)->()) {
+    public init(
+        get: @escaping @MainActor ()->Value,
+        set: @escaping @MainActor (Value)->()
+    ) {
         
         ///
         self.get = get

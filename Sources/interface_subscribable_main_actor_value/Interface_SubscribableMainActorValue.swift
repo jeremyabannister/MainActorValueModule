@@ -11,10 +11,7 @@
 
 
 ///
-public protocol
-    Interface_SubscribableMainActorValue
-        <Value>:
-            Interface_ReadableMainActorValue {
+public protocol Interface_SubscribableMainActorValue<Value>: Interface_ReadableMainActorValue {
     
     ///
     var willSet: any Interface_MainActorReactionManager<Void> { get }

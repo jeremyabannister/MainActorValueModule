@@ -13,15 +13,15 @@
 public protocol Interface_MainActorReactionManager <Event> {
     
     ///
-    func _registerReaction_weakClosure
-        (key: String,
-         _ reaction: @escaping @MainActor (Event)->())
-    -> @MainActor ()->()
+    func _registerReaction_weakClosure(
+        key: String,
+        _ reaction: @escaping @MainActor (Event)->()
+    ) -> @MainActor ()->()
     
     ///
-    func _unregisterReaction_weakClosure
-        (forKey key: String)
-    -> @MainActor ()->()
+    func _unregisterReaction_weakClosure(
+        forKey key: String
+    ) -> @MainActor ()->()
     
     ///
     var leakTracker: LeakTracker { get }

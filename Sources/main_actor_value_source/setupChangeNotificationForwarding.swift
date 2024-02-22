@@ -7,13 +7,15 @@
 
 ///
 @MainActor
-internal func setupChangeNotificationForwarding
-    <Value>
-    (sourceObjectID: ObjectID?,
-     generateValue: MainActorClosure_0Inputs<Value?>,
-     _willSet: MainActorReactionManager<Void>,
-     _didSet: MainActorReactionManager<Value>,
-     leakTracker: LeakTracker) {
+internal func setupChangeNotificationForwarding<
+    Value
+>(
+    sourceObjectID: ObjectID?,
+    generateValue: MainActorClosure_0Inputs<Value?>,
+    _willSet: MainActorReactionManager<Void>,
+    _didSet: MainActorReactionManager<Value>,
+    leakTracker: LeakTracker
+) {
     
     ///
     let uniqueID = UUID()
@@ -32,8 +34,9 @@ internal func setupChangeNotificationForwarding
     
     ///
     @MainActor
-    func updateWillSetAndDidSet
-        (for newAccessedSources: [ObjectID: any Interface_MainActorValueSource]) {
+    func updateWillSetAndDidSet(
+        for newAccessedSources: [ObjectID: any Interface_MainActorValueSource]
+    ) {
         
         ///
         let staleSourceIDs: Set<ObjectID> =
@@ -102,7 +105,7 @@ internal func setupChangeNotificationForwarding
     
     ///
     @MainActor
-    func updateSubscriptions () {
+    func updateSubscriptions() {
         
         ///
         var (value, accessedSources) =
@@ -156,11 +159,11 @@ internal func setupChangeNotificationForwarding
 }
 
 ///
-fileprivate extension Interface_MainActorValueSourceAccessor {
+private extension Interface_MainActorValueSourceAccessor {
     
     ///
     @MainActor
-    func checkCurrentSources () -> [ObjectID: any Interface_MainActorValueSource] {
+    func checkCurrentSources() -> [ObjectID: any Interface_MainActorValueSource] {
         
         ///
         return
@@ -174,7 +177,7 @@ fileprivate extension Interface_MainActorValueSourceAccessor {
 }
 
 ///
-fileprivate extension Interface_SubscribableMainActorValue {
+private extension Interface_SubscribableMainActorValue {
     
     ///
     var didSet_erased: any Interface_MainActorReactionManager {

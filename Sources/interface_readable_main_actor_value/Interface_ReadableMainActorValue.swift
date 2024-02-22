@@ -10,10 +10,7 @@
 
 
 ///
-public protocol
-    Interface_ReadableMainActorValue
-        <Value>:
-            Interface_MainActorValueSourceAccessor {
+public protocol Interface_ReadableMainActorValue<Value>: Interface_MainActorValueSourceAccessor {
     
     ///
     @MainActor
@@ -28,7 +25,7 @@ extension Interface_ReadableMainActorValue {
     
     ///
     @MainActor
-    public func _accessCurrentSources () {
+    public func _accessCurrentSources() {
         _ = self.currentValue
     }
 }

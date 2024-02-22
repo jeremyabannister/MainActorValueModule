@@ -12,13 +12,13 @@ internal final class MainActorClosure_0Inputs <Output> {
     private let closure: @MainActor ()->Output
     
     ///
-    init (_ closure: @escaping @MainActor ()->Output) {
+    init(_ closure: @escaping @MainActor ()->Output) {
         self.closure = closure
     }
     
     ///
     @MainActor
-    func callAsFunction () -> Output {
+    func callAsFunction() -> Output {
         closure()
     }
 }

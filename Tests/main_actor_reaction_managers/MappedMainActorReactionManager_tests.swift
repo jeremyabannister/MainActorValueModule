@@ -15,7 +15,7 @@ final class main_actor_reaction_managers_tests: XCTestCase {
     
     ///
     @MainActor
-    func test_for_leaks () async {
+    func test_for_leaks() async {
         
         ///
         let rootLeakTracker = RootLeakTracker(name: #function)

@@ -10,7 +10,7 @@ final class MainActorValueSource_tests: XCTestCase {
     
     ///
     @MainActor
-    func test_init_initialValue_withDeepChangeMonitoring () async {
+    func test_init_initialValue_withDeepChangeMonitoring() async {
         
         ///
         let rootLeakTracker = RootLeakTracker(name: #function)
@@ -92,7 +92,7 @@ final class MainActorValueSource_tests: XCTestCase {
     
     ///
     @MainActor
-    func test_madeSubscribable () async {
+    func test_madeSubscribable() async {
         
         ///
         let rootLeakTracker = RootLeakTracker(name: #function)

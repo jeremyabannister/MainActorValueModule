@@ -7,18 +7,16 @@
 
 ///
 @MainActor
-public final class
-    MainActorValueSource
-        <Value>:
-            Interface_SubscribableMainActorValue,
-            Interface_MainActorValueSource,
-            ReferenceType {
+public final class MainActorValueSource<Value>: Interface_SubscribableMainActorValue,
+                                                Interface_MainActorValueSource,
+                                                ReferenceType {
     
     ///
-    public convenience init
-        (initialValue: Value,
-         leakTracker: LeakTracker,
-         withDeepChangeMonitoring: Void)
+    public convenience init(
+        initialValue: Value,
+        leakTracker: LeakTracker,
+        withDeepChangeMonitoring: Void
+    )
     where Value: Interface_MainActorValueSourceAccessor {
         
         ///
@@ -38,9 +36,10 @@ public final class
     }
     
     ///
-    public convenience init
-        (initialValue: Value,
-         leakTracker: LeakTracker) {
+    public convenience init(
+        initialValue: Value,
+        leakTracker: LeakTracker
+    ) {
         
         ///
         self.init(
@@ -50,10 +49,11 @@ public final class
     }
     
     ///
-    public nonisolated convenience init
-        (initialValue: Value,
-         leakTracker: LeakTracker,
-         nonisolatedOverload: Void) {
+    public nonisolated convenience init(
+        initialValue: Value,
+        leakTracker: LeakTracker,
+        nonisolatedOverload: Void
+    ) {
         
         ///
         self.init(
@@ -64,9 +64,10 @@ public final class
     }
     
     ///
-    public convenience init
-        (uninitializedValue: @escaping @MainActor ()->Value,
-         leakTracker: LeakTracker) {
+    public convenience init(
+        uninitializedValue: @escaping @MainActor ()->Value,
+        leakTracker: LeakTracker
+    ) {
         
         ///
         self.init(
@@ -76,10 +77,11 @@ public final class
     }
     
     ///
-    public nonisolated convenience init
-        (uninitializedValue: @escaping @MainActor ()->Value,
-         leakTracker: LeakTracker,
-         nonisolatedOverload: Void) {
+    public nonisolated convenience init(
+        uninitializedValue: @escaping @MainActor ()->Value,
+        leakTracker: LeakTracker,
+        nonisolatedOverload: Void
+    ) {
         
         ///
         self.init(
@@ -90,9 +92,10 @@ public final class
     }
     
     ///
-    private init
-        (_valueStorage: ValueStorage,
-         leakTracker: LeakTracker) {
+    private init(
+        _valueStorage: ValueStorage,
+        leakTracker: LeakTracker
+    ) {
         
         ///
         self._valueStorage = _valueStorage
@@ -110,10 +113,11 @@ public final class
     }
     
     ///
-    private nonisolated init
-        (_valueStorage: ValueStorage,
-         leakTracker: LeakTracker,
-         nonisolatedOverload: Void) {
+    private nonisolated init(
+        _valueStorage: ValueStorage,
+        leakTracker: LeakTracker,
+        nonisolatedOverload: Void
+    ) {
         
         ///
         self._valueStorage = _valueStorage
@@ -139,8 +143,8 @@ public final class
     
     ///
     private enum ValueStorage {
-        case value (Value)
-        case notYetComputed (@MainActor ()->Value)
+        case value(Value)
+        case notYetComputed(@MainActor ()->Value)
     }
     
     ///
@@ -214,12 +218,12 @@ extension MainActorValueSource {
     }
     
     ///
-    public func setValue (to newValue: Value) {
+    public func setValue(to newValue: Value) {
         self.currentValue = newValue
     }
     
     ///
-    public func mutateValue (using mutation: (inout Value)->()) {
+    public func mutateValue(using mutation: (inout Value)->()) {
         var copy = currentValue
         mutation(&copy)
         self.currentValue = copy

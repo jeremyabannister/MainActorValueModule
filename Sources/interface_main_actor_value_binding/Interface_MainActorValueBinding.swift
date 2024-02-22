@@ -10,7 +10,7 @@
 
 
 ///
-public protocol Interface_MainActorValueBinding <Value>: Interface_ReadableMainActorValue {
+public protocol Interface_MainActorValueBinding<Value>: Interface_ReadableMainActorValue {
     
     ///
     @MainActor

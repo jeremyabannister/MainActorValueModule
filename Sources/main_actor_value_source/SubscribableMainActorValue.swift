@@ -10,9 +10,11 @@ extension Interface_ReadableMainActorValue {
     
     ///
     @MainActor
-    public func madeSubscribable
-        (leakTracker: LeakTracker)
-    -> SubscribableMainActorValue<Value> {
+    public func madeSubscribable(
+        leakTracker: LeakTracker
+    ) -> SubscribableMainActorValue<Value> {
+        
+        ///
         SubscribableMainActorValue(
             readableValue: self,
             leakTracker: leakTracker
@@ -21,16 +23,14 @@ extension Interface_ReadableMainActorValue {
 }
 
 ///
-public actor
-    SubscribableMainActorValue
-        <Value>:
-            Interface_SubscribableMainActorValue {
+public actor SubscribableMainActorValue<Value>: Interface_SubscribableMainActorValue {
     
     ///
     @MainActor
-    public init
-        (readableValue: any Interface_ReadableMainActorValue<Value>,
-         leakTracker: LeakTracker) {
+    public init(
+        readableValue: any Interface_ReadableMainActorValue<Value>,
+        leakTracker: LeakTracker
+    ) {
         
         ///
         self.init(
@@ -41,9 +41,10 @@ public actor
     
     ///
     @MainActor
-    public init
-        (generateValue: @escaping @MainActor ()->Value,
-         leakTracker: LeakTracker) {
+    public init(
+        generateValue: @escaping @MainActor ()->Value,
+        leakTracker: LeakTracker
+    ) {
         
         ///
         let optionalGenerateValueClosure: MainActorClosure_0Inputs<Value?> =

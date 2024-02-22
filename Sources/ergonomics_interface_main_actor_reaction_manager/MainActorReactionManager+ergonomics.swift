@@ -15,9 +15,10 @@ extension Interface_MainActorReactionManager {
     
     ///
     @MainActor
-    public func registerReaction
-        (key: String,
-         _ reaction: @escaping @MainActor (Event)->()) {
+    public func registerReaction(
+        key: String,
+        _ reaction: @escaping @MainActor (Event)->()
+    ) {
         
         ///
         _registerReaction_weakClosure(key: key, reaction)()
@@ -25,8 +26,9 @@ extension Interface_MainActorReactionManager {
     
     ///
     @MainActor
-    public func unregisterReaction
-        (forKey key: String) {
+    public func unregisterReaction(
+        forKey key: String
+    ) {
         
         ///
         _unregisterReaction_weakClosure(forKey: key)()
@@ -38,8 +40,9 @@ extension Interface_MainActorReactionManager {
     
     ///
     @MainActor
-    public func registerReactionPermanently
-        (_ reaction: @escaping @MainActor (Event)->()) {
+    public func registerReactionPermanently(
+        _ reaction: @escaping @MainActor (Event)->()
+    ) {
         
         ///
         registerReaction(key: UUID().uuidString, reaction)
@@ -51,9 +54,9 @@ extension Interface_MainActorReactionManager {
     
     ///
     @MainActor
-    public func registerReaction
-        (_ reaction: @escaping @MainActor (Event)->())
-    -> ReactionRetainer {
+    public func registerReaction(
+        _ reaction: @escaping @MainActor (Event)->()
+    ) -> ReactionRetainer {
         
         ///
         let key = UUID().uuidString
@@ -75,14 +78,23 @@ extension Interface_MainActorReactionManager {
 
 ///
 public actor ReactionRetainer {
+    
+    ///
     @MainActor
-    fileprivate init
-        (leakTracker: LeakTracker,
-         unregisterReaction: @escaping @MainActor ()->()) {
+    fileprivate init(
+        leakTracker: LeakTracker,
+        unregisterReaction: @escaping @MainActor ()->()
+    ) {
+        
+        ///
         self.unregisterReaction = unregisterReaction
         leakTracker.track(self)
     }
+    
+    ///
     private let unregisterReaction: @MainActor ()->()
+    
+    ///
     deinit {
         Task { @MainActor [unregisterReaction] in
             unregisterReaction()

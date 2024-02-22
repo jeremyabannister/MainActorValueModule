@@ -11,8 +11,8 @@
 
 
 ///
-public final class ObservableMainActorValue <Value>: ObservableObject,
-                                                     Interface_ReadableMainActorValue {
+public final class ObservableMainActorValue<Value>: ObservableObject,
+                                                    Interface_ReadableMainActorValue {
     
     ///
     public let objectWillChange: AnyPublisher<Void, Never>
@@ -28,9 +28,10 @@ public final class ObservableMainActorValue <Value>: ObservableObject,
     
     ///
     @MainActor
-    public init
-        (_ value: some Interface_ReadableMainActorValue<Value>,
-         leakTracker: LeakTracker) {
+    public init(
+        _ value: some Interface_ReadableMainActorValue<Value>,
+        leakTracker: LeakTracker
+    ) {
         
         ///
         self.value = value
@@ -49,7 +50,7 @@ public final class ObservableMainActorValue <Value>: ObservableObject,
     }
     
     ///
-    public init (_ value: some Interface_SubscribableMainActorValue<Value>) {
+    public init(_ value: some Interface_SubscribableMainActorValue<Value>) {
         
         ///
         self.value = value
@@ -69,10 +70,15 @@ extension Interface_ReadableMainActorValue {
     
     ///
     @MainActor
-    public func asObservableMainActorValue
-        (leakTracker: LeakTracker)
-    -> ObservableMainActorValue<Value> {
-        .init(self, leakTracker: leakTracker)
+    public func asObservableMainActorValue(
+        leakTracker: LeakTracker
+    ) -> ObservableMainActorValue<Value> {
+        
+        ///
+        .init(
+            self,
+            leakTracker: leakTracker
+        )
     }
 }
 
@@ -80,7 +86,7 @@ extension Interface_ReadableMainActorValue {
 extension Interface_SubscribableMainActorValue {
     
     ///
-    public func asObservableMainActorValue () -> ObservableMainActorValue<Value> {
+    public func asObservableMainActorValue() -> ObservableMainActorValue<Value> {
         .init(self)
     }
 }
@@ -97,28 +103,31 @@ internal struct MainActorValuePublisher <Value>: Publisher {
     
     ///
     private enum MainActorValueType {
-        case readOnly (any Interface_ReadableMainActorValue<Value>, LeakTracker)
-        case subscribable (any Interface_SubscribableMainActorValue<Value>)
+        case readOnly(any Interface_ReadableMainActorValue<Value>, LeakTracker)
+        case subscribable(any Interface_SubscribableMainActorValue<Value>)
     }
     
     ///
-    init
-        (readOnlyValue: some Interface_ReadableMainActorValue<Value>,
-         leakTracker: LeakTracker) {
+    init(
+        readOnlyValue: some Interface_ReadableMainActorValue<Value>,
+        leakTracker: LeakTracker
+    ) {
         
         ///
         self.mainActorValue = .readOnly(readOnlyValue, leakTracker)
     }
     
     ///
-    init (subscribableValue: some Interface_SubscribableMainActorValue<Value>) {
+    init(subscribableValue: some Interface_SubscribableMainActorValue<Value>) {
         self.mainActorValue = .subscribable(subscribableValue)
     }
     
     ///
-    func receive
-        <S: Subscriber>
-        (subscriber: S)
+    func receive<
+        S: Subscriber
+    >(
+        subscriber: S
+    )
     where S.Input == Output,
           S.Failure == Failure {
         
@@ -153,7 +162,7 @@ internal struct MainActorValuePublisher <Value>: Publisher {
 private extension MainActorValuePublisher {
     
     ///
-    final class Subscription <S: Subscriber>: Combine.Subscription
+    final class Subscription<S: Subscriber>: Combine.Subscription
         where S.Input == Value,
               S.Failure == Never {
         
@@ -167,10 +176,11 @@ private extension MainActorValuePublisher {
         private var remainingDemand: Subscribers.Demand? = Subscribers.Demand.none
         
         ///
-        init
-            (readOnlyValue: some Interface_ReadableMainActorValue<Value>,
-             subscriber: S,
-             leakTracker: LeakTracker) {
+        init(
+            readOnlyValue: some Interface_ReadableMainActorValue<Value>,
+            subscriber: S,
+            leakTracker: LeakTracker
+        ) {
             
             ///
             self.subscriber = subscriber
@@ -191,9 +201,10 @@ private extension MainActorValuePublisher {
         }
         
         ///
-        init
-            (subscribableValue: some Interface_SubscribableMainActorValue<Value>,
-             subscriber: S) {
+        init(
+            subscribableValue: some Interface_SubscribableMainActorValue<Value>,
+            subscriber: S
+        ) {
             
             ///
             self.subscriber = subscriber
@@ -206,8 +217,9 @@ private extension MainActorValuePublisher {
         
         ///
         @MainActor
-        private func setupReaction
-            (using subscribableValue: some Interface_SubscribableMainActorValue<Value>) {
+        private func setupReaction(
+            using subscribableValue: some Interface_SubscribableMainActorValue<Value>
+        ) {
             
             ///
             self.subscribableValueRetainer = subscribableValue
@@ -224,7 +236,7 @@ private extension MainActorValuePublisher {
         }
         
         ///
-        func request (_ demand: Subscribers.Demand) {
+        func request(_ demand: Subscribers.Demand) {
             
             ///
             Task { @MainActor in
@@ -241,7 +253,7 @@ private extension MainActorValuePublisher {
         }
         
         ///
-        func cancel () {
+        func cancel() {
             
             ///
             Task { @MainActor in

@@ -6,9 +6,7 @@
 //
 
 ///
-internal protocol
-    Interface_MainActorValueSource:
-        Interface_MainActorValueBinding,
-        Interface_SubscribableMainActorValue {
+internal protocol Interface_MainActorValueSource: Interface_MainActorValueBinding,
+                                                  Interface_SubscribableMainActorValue {
     
 }

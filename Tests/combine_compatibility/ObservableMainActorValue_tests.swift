@@ -10,7 +10,7 @@ final class Interface_ReadableMainActorValue_tests: XCTestCase {
     
     ///
     @MainActor
-    func test_asObservableMainActorValue () async {
+    func test_asObservableMainActorValue() async {
         
         ///
         let rootLeakTracker = RootLeakTracker(name: #function)
@@ -24,10 +24,11 @@ final class Interface_ReadableMainActorValue_tests: XCTestCase {
             )
         
         ///
-        func createObservable
-            <Value>
-            (using readOnly: some Interface_ReadableMainActorValue<Value>)
-        -> ObservableMainActorValue<Value> {
+        func createObservable<
+            Value
+        >(
+            using readOnly: some Interface_ReadableMainActorValue<Value>
+        ) -> ObservableMainActorValue<Value> {
             
             ///
             readOnly.asObservableMainActorValue(
@@ -67,20 +68,20 @@ final class Interface_ReadableMainActorValue_tests: XCTestCase {
         
         ///
         @MainActor
-        func assert
-            (value: Int,
-             changeCount: Int)
-        throws {
+        func assert(
+            value: Int,
+            changeCount: Int
+        ) throws {
             try observable.currentValue.assertEqual(to: value)
             try assertChangeCount(changeCount)
         }
         
         ///
         @MainActor
-        func setAndAssert
-            (value: Int,
-             changeCount: Int)
-        async throws {
+        func setAndAssert(
+            value: Int,
+            changeCount: Int
+        ) async throws {
             source.setValue(to: value)
             try await Task.sleep(seconds: 0.1)
             try assert(value: value, changeCount: changeCount)

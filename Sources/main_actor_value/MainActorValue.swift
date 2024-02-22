@@ -10,13 +10,10 @@
 
 
 ///
-public struct
-    MainActorValue
-        <Value>:
-            Interface_ReadableMainActorValue {
+public struct MainActorValue<Value>: Interface_ReadableMainActorValue {
     
     ///
-    public init (_ fetchValue: @escaping @MainActor ()->Value) {
+    public init(_ fetchValue: @escaping @MainActor ()->Value) {
         self.fetchValue = fetchValue
     }
     

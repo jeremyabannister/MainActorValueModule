@@ -13,10 +13,11 @@
 extension Interface_ReadableMainActorValue {
     
     ///
-    public func map
-        <NewValue>
-        (_ transform: @escaping @MainActor (Value)->NewValue)
-    -> MainActorValue<NewValue> {
+    public func map<
+        NewValue
+    >(
+        _ transform: @escaping @MainActor (Value)->NewValue
+    ) -> MainActorValue<NewValue> {
         
         ///
         MainActorValue { [self] in

@@ -20,10 +20,11 @@ internal actor MainActorValueSourceMonitor {
     
     ///
     @MainActor
-    func generateValueAndReportAccessedSources
-        <Value>
-        (using generateValue: MainActorClosure_0Inputs<Value>)
-    -> (value: Value, accessedSources: [ObjectID: any Interface_MainActorValueSource]) {
+    func generateValueAndReportAccessedSources<
+        Value
+    >(
+        using generateValue: MainActorClosure_0Inputs<Value>
+    ) -> (value: Value, accessedSources: [ObjectID: any Interface_MainActorValueSource]) {
         
         ///
         let uuid: UUID = .generateRandom()
@@ -46,9 +47,11 @@ internal actor MainActorValueSourceMonitor {
     
     ///
     @MainActor
-    func report
-        <Value>
-        (accessOf source: MainActorValueSource<Value>) {
+    func report<
+        Value
+    >(
+        accessOf source: MainActorValueSource<Value>
+    ) {
         
         ///
         for (key, accessLog) in logsOfAccessesToSources {
