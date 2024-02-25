@@ -153,6 +153,13 @@ public final class MainActorValueSource<Value>: Interface_SubscribableMainActorV
 }
 
 ///
+internal extension MainActorValueSource {
+    
+    /// We need didSet_erased internally because for older OS versions we don't have "runtime support for parameterized protocol types".
+    nonisolated var didSet_erased: any Interface_MainActorReactionManager { _didSet }
+}
+
+///
 extension MainActorValueSource {
     
     ///

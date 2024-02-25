@@ -65,7 +65,8 @@ internal func setupChangeNotificationForwarding<
             ///
             latestAccessedSources
                 .currentValue[staleSourceID]?
-                .didSet
+                // We used didSet_erased because for older OS versions we don't have "runtime support for parameterized protocol types".
+                .didSet_erased
                 .unregisterReaction(forKey: uniqueID.uuidString)
         }
         
@@ -173,14 +174,5 @@ private extension Interface_MainActorValueSourceAccessor {
                     using: .init { self._accessCurrentSources() }
                 )
                 .accessedSources
-    }
-}
-
-///
-private extension Interface_SubscribableMainActorValue {
-    
-    ///
-    var didSet_erased: any Interface_MainActorReactionManager {
-        self.didSet
     }
 }

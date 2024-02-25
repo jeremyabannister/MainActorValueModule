@@ -1,4 +1,4 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 5.9
 
 ///
 import PackageDescription
@@ -6,7 +6,7 @@ import PackageDescription
 ///
 let package = Package(
     name: "MainActorValueModule",
-    platforms: [.macOS(.v13), .iOS(.v16), .watchOS(.v9), .tvOS(.v16)],
+    platforms: [.macOS(.v10_15), .iOS(.v13), .watchOS(.v6), .tvOS(.v13)],
     products: [
         .library(
             name: "MainActorValueModule",
