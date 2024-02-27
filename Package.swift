@@ -51,7 +51,9 @@ let package = Package(
         submoduleTarget(
             name: "map",
             submoduleDependencies: [
+                "interface_subscribable_main_actor_value",
                 "main_actor_value",
+                "mapped_main_actor_reaction_manager",
             ]
         ),
         submoduleTarget(
