@@ -10,6 +10,7 @@
 
 
 ///
+@MainActor
 public struct MainActorValueBinding<Value>: Interface_MainActorValueBinding {
     
     ///
@@ -28,7 +29,6 @@ public struct MainActorValueBinding<Value>: Interface_MainActorValueBinding {
     private let set: @MainActor (Value)->()
     
     ///
-    @MainActor
     public var currentValue: Value {
         get { get() }
         nonmutating set { set(newValue) }
