@@ -23,11 +23,11 @@ extension Interface_ReadableMainActorValue {
 }
 
 ///
-public actor SubscribableMainActorValue<Value>: Interface_SubscribableMainActorValue {
+@MainActor
+public final class SubscribableMainActorValue<Value>: Interface_SubscribableMainActorValue {
     
     ///
-    @MainActor
-    public init(
+    public convenience init(
         readableValue: any Interface_ReadableMainActorValue<Value>,
         leakTracker: LeakTracker
     ) {
@@ -40,7 +40,6 @@ public actor SubscribableMainActorValue<Value>: Interface_SubscribableMainActorV
     }
     
     ///
-    @MainActor
     public init(
         generateValue: @escaping @MainActor ()->Value,
         leakTracker: LeakTracker

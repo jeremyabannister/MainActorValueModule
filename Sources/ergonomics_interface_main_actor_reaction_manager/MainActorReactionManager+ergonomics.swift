@@ -77,10 +77,10 @@ extension Interface_MainActorReactionManager {
 }
 
 ///
-public actor ReactionRetainer {
+@MainActor
+public final class ReactionRetainer {
     
     ///
-    @MainActor
     fileprivate init(
         leakTracker: LeakTracker,
         unregisterReaction: @escaping @MainActor ()->()
