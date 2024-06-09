@@ -1,5 +1,6 @@
 // swift-tools-version: 5.9
 
+
 ///
 import PackageDescription
 
@@ -133,22 +134,28 @@ let package = Package(
 )
 
 ///
-func umbrellaTarget
-    (name: String,
-     submoduleDependencies: [String] = [],
-     otherDependencies: [Target.Dependency] = [])
--> Target {
+func umbrellaTarget(
+    name: String,
+    submoduleDependencies: [String] = [],
+    otherDependencies: [Target.Dependency] = []
+) -> Target {
+    
+    ///
     .target(
         name: name,
         dependencies: submoduleDependencies.map { .init(stringLiteral: submoduleName($0)) } + otherDependencies
     )
 }
-func testedSubmoduleTarget
-    (name: String,
-     submoduleDependencies: [String] = [],
-     otherDependencies: [Target.Dependency] = [],
-     nonstandardLocation: String? = nil)
--> [Target] {
+
+///
+func testedSubmoduleTarget(
+    name: String,
+    submoduleDependencies: [String] = [],
+    otherDependencies: [Target.Dependency] = [],
+    nonstandardLocation: String? = nil
+) -> [Target] {
+    
+    ///
     [
         submoduleTarget(
             name: name,
@@ -166,41 +173,58 @@ func testedSubmoduleTarget
         )
     ]
 }
-func submoduleTarget
-    (name: String,
-     submoduleDependencies: [String] = [],
-     otherDependencies: [Target.Dependency] = [],
-     nonstandardLocation: String? = nil)
--> Target {
+
+///
+func submoduleTarget(
+    name: String,
+    submoduleDependencies: [String] = [],
+    otherDependencies: [Target.Dependency] = [],
+    nonstandardLocation: String? = nil
+) -> Target {
+    
+    ///
     .target(
         name: submoduleName(name),
         dependencies: submoduleDependencies.map { .init(stringLiteral: submoduleName($0)) } + otherDependencies,
         path: "Sources/\(nonstandardLocation ?? name)"
     )
 }
-func submoduleName (_ name: String) -> String { "MainActorValueModule_\(name)" }
+
+///
+func submoduleName(
+    _ name: String
+) -> String {
+    
+    ///
+    "MainActorValueModule_\(name)"
+}
 
 
 
 ///
-func expand (_ targetProviders: [any TargetProvider]) -> [Target] {
-    targetProviders.flatMap { $0.targets() }
+func expand(
+    _ targetProviders: [any TargetProvider]
+) -> [Target] {
+    
+    ///
+    targetProviders
+        .flatMap { $0.targets() }
 }
 
 ///
 extension Target: TargetProvider {
-    func targets () -> [Target] {
+    func targets() -> [Target] {
         [self]
     }
 }
 
 extension [Target]: TargetProvider {
-    func targets () -> [Target] {
+    func targets() -> [Target] {
         self
     }
 }
 
 ///
 protocol TargetProvider {
-    func targets () -> [Target]
+    func targets() -> [Target]
 }
