@@ -6,8 +6,10 @@
 //
 
 ///
-public final class ObservableMainActorValue<Value>: ObservableObject,
-                                                    Interface_ReadableMainActorValue {
+public final class ObservableMainActorValue<
+    Value
+>: ObservableObject,
+   Interface_ReadableMainActorValue {
     
     ///
     public let objectWillChange: AnyPublisher<Void, Never>
@@ -33,7 +35,7 @@ public final class ObservableMainActorValue<Value>: ObservableObject,
         
         ///
         self.objectWillChange =
-            MainActorValuePublisher(
+            MainActorValueWillChangePublisher(
                 readOnlyValue: value,
                 leakTracker: leakTracker
             )
@@ -52,7 +54,7 @@ public final class ObservableMainActorValue<Value>: ObservableObject,
         
         ///
         self.objectWillChange =
-            MainActorValuePublisher(
+            MainActorValueWillChangePublisher(
                 subscribableValue: value
             )
                 .map { _ in () }
