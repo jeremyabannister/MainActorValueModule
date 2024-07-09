@@ -148,8 +148,8 @@ public final class MainActorValueSource<Value>: Interface_SubscribableMainActorV
     }
     
     ///
-    private let _willSet: MainActorReactionManager<Void>
-    private let _didSet: MainActorReactionManager<Value>
+    package nonisolated let _willSet: MainActorReactionManager<Void>
+    package nonisolated let _didSet: MainActorReactionManager<Value>
 }
 
 ///

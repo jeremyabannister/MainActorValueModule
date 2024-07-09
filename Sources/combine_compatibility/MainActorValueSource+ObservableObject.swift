@@ -9,11 +9,7 @@
 extension MainActorValueSource: ObservableObject {
     
     ///
-    public nonisolated var objectWillChange: AnyPublisher<Void, Never> {
-        MainActorValuePublisher(
-            subscribableValue: self
-        )
-            .map { _ in () }
-            .eraseToAnyPublisher()
+    public nonisolated var objectWillChange: MainActorReactionManager<Void> {
+        _willSet
     }
 }
