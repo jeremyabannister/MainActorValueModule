@@ -9,6 +9,18 @@
 extension MainActorValueSource {
     
     ///
+    public func getBinding() -> SubscribableMainActorValueBinding<Value> {
+        .init(
+            subscribableValue: self,
+            setValue: { self.currentValue = $0 }
+        )
+    }
+}
+
+///
+extension MainActorValueSource {
+    
+    ///
     public var asMainActorValueBinding: MainActorValueBinding<Value> {
         .init(
             get: { self.currentValue },

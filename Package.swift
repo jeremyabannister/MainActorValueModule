@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 5.10
 
 
 ///
@@ -39,6 +39,7 @@ let package = Package(
                 "main_actor_value_binding",
                 "main_actor_value_source",
                 "map",
+                "subscribable_main_actor_value_binding",
             ]
         ),
         
@@ -71,6 +72,14 @@ let package = Package(
                 "main_actor_reaction_managers",
             ],
             otherDependencies: ["FoundationToolkit"]
+        ),
+        submoduleTarget(
+            name: "subscribable_main_actor_value_binding",
+            submoduleDependencies: [
+                "interface_main_actor_value_binding",
+                "interface_subscribable_main_actor_value",
+                "map",
+            ]
         ),
         submoduleTarget(
             name: "main_actor_value_binding",
